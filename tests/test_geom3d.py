@@ -1,17 +1,12 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Jul  5 14:37:24 2020
-
-@author: corkep
-"""
-
-from spatialmath.geom3d import *
+from spatialmath.geom3d import Line3, Plane3
 from spatialmath.pose3d import SE3
+import numpy as np
 
 import unittest
+import math
 import numpy.testing as nt
 import spatialmath.base as base
+import matplotlib.pyplot as plt
 import pytest
 import sys
 
@@ -236,18 +231,7 @@ class Line3Test(unittest.TestCase):
         self.assertTrue(L ^ L1)
         self.assertTrue(L ^ L2)
 
-    def test_line(self):
-        # mindist
-        # intersect
-        # char
-        # intersect_volume
-        # mindist
-        # mtimes
-        # or
-        # side
-        pass
-
-    def test_contains(self):
+    def test_contains_2(self):
         P = [2, 3, 7]
         Q = [2, 1, 0]
         L = Line3.Join(P, Q)
@@ -311,15 +295,6 @@ class Line3Test(unittest.TestCase):
         px.intersects(px)
         px.intersects(py)
         px.intersects(px1)
-
-    # def test_intersect(self):
-    #     px = Line3([0, 0, 0], [1, 0, 0]);  # x-axis
-    #     py = Line3([0, 0, 0], [0, 1, 0]);  # y-axis
-    #
-    #     plane.d = [1, 0, 0]; plane.p = 2; # plane x=2
-    #
-    #     px.intersect_plane(plane)
-    #     py.intersect_plane(plane)
 
 
 if __name__ == "__main__":

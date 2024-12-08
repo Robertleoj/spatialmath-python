@@ -1,20 +1,48 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Apr 10 14:19:04 2020
-
-@author: corkep
-
-"""
-
 import numpy as np
 import numpy.testing as nt
 import unittest
 from math import pi
 from scipy.linalg import logm
-
-from spatialmath.base.transforms3d import *
-from spatialmath.base.transformsNd import isR, t2r, r2t, rt2tr, skew
+from spatialmath.base.transforms3d import (
+    isR,
+    t2r,
+    r2t,
+    rt2tr,
+    skew,
+    trinv,
+    rotx,
+    roty,
+    rotz,
+    transl,
+    trotx,
+    troty,
+    trotz,
+    isrot,
+    ishom,
+    rpy2r,
+    rpy2tr,
+    eul2r,
+    eul2tr,
+    angvec2r,
+    angvec2tr,
+    trlog,
+    trexp,
+    exp2r,
+    exp2tr,
+    tr2rpy,
+    tr2eul,
+    tr2angvec,
+    trnorm,
+    trinterp,
+    trprint,
+    tr2delta,
+    delta2tr,
+    tr2jac,
+    r2x,
+    tr2x,
+    x2r,
+    x2tr,
+)
 
 
 class Test3D(unittest.TestCase):
@@ -260,8 +288,6 @@ class Test3D(unittest.TestCase):
         )
 
     def test_angvec2r(self):
-        r2d = 180 / pi
-
         nt.assert_array_almost_equal(angvec2r(0, [1, 0, 0]), rotx(0))
         nt.assert_array_almost_equal(angvec2r(pi / 4, [1, 0, 0]), rotx(pi / 4))
         nt.assert_array_almost_equal(angvec2r(-pi / 4, [1, 0, 0]), rotx(-pi / 4))
@@ -275,8 +301,6 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(angvec2r(-pi / 4, [0, 0, 1]), rotz(-pi / 4))
 
     def test_angvec2tr(self):
-        r2d = 180 / pi
-
         nt.assert_array_almost_equal(angvec2tr(0, [1, 0, 0]), trotx(0))
         nt.assert_array_almost_equal(angvec2tr(pi / 4, [1, 0, 0]), trotx(pi / 4))
         nt.assert_array_almost_equal(angvec2tr(-pi / 4, [1, 0, 0]), trotx(-pi / 4))
@@ -288,8 +312,6 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(angvec2tr(0, [0, 0, 1]), trotz(0))
         nt.assert_array_almost_equal(angvec2tr(pi / 4, [0, 0, 1]), trotz(pi / 4))
         nt.assert_array_almost_equal(angvec2tr(-pi / 4, [0, 0, 1]), trotz(-pi / 4))
-
-        r2d = 180 / pi
 
         nt.assert_array_almost_equal(angvec2r(0, [1, 0, 0]), rotx(0))
         nt.assert_array_almost_equal(angvec2r(pi / 4, [1, 0, 0]), rotx(pi / 4))
@@ -333,8 +355,6 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(trexp(logm(T)), T)
 
     def test_exp2r(self):
-        r2d = 180 / pi
-
         nt.assert_array_almost_equal(exp2r([0, 0, 0]), rotx(0))
         nt.assert_array_almost_equal(exp2r([pi / 4, 0, 0]), rotx(pi / 4))
         nt.assert_array_almost_equal(exp2r([-pi / 4, 0, 0]), rotx(-pi / 4))
@@ -348,8 +368,6 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(exp2r([0, 0, -pi / 4]), rotz(-pi / 4))
 
     def test_exp2tr(self):
-        r2d = 180 / pi
-
         nt.assert_array_almost_equal(exp2tr([0, 0, 0]), trotx(0))
         nt.assert_array_almost_equal(exp2tr([pi / 4, 0, 0]), trotx(pi / 4))
         nt.assert_array_almost_equal(exp2tr([-pi / 4, 0, 0]), trotx(-pi / 4))

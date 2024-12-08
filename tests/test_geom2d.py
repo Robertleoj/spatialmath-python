@@ -1,15 +1,9 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Jul  5 14:37:24 2020
-
-@author: corkep
-"""
-
-from spatialmath.geom2d import *
+# from spatialmath.geom2d import *
+from spatialmath.geom2d import Polygon2, Line2, Ellipse
 from spatialmath.pose2d import SE2
 
 import unittest
+import numpy as np
 import pytest
 import sys
 import numpy.testing as nt

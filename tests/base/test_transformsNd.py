@@ -12,17 +12,35 @@ import numpy.testing as nt
 import unittest
 from math import pi
 
-from spatialmath.base.transformsNd import *
-from spatialmath.base.transforms3d import trotx, transl, rotx, isrot, ishom
+# from spatialmath.base.transformsNd import *
+from spatialmath.base.transformsNd import (
+    iseye,
+    e2h,
+    h2e,
+    homtrans,
+    skew,
+    vex,
+    skewa,
+    isskewa,
+    vexa,
+    det,
+)
+from spatialmath.base.transforms3d import (
+    trotx,
+    transl,
+    rotx,
+    isrot,
+    ishom,
+    r2t,
+    t2r,
+    rt2tr,
+    tr2rt,
+    Ab2M,
+    isR,
+    isskew,
+)
 from spatialmath.base.transforms2d import trot2, transl2, rot2, isrot2, ishom2
-
-try:
-    import sympy as sp
-
-    _symbolics = True
-    from spatialmath.base.symbolic import symbol
-except ImportError:
-    _symbolics = False
+from spatialmath.base.symbolic import symbol
 
 
 class TestND(unittest.TestCase):
@@ -60,7 +78,6 @@ class TestND(unittest.TestCase):
         with self.assertRaises(ValueError):
             r2t(np.ones((3, 3)), check=True)
 
-    @unittest.skipUnless(_symbolics, "sympy required")
     def test_r2t_sym(self):
         theta = symbol("theta")
         R = rot2(theta)
@@ -126,7 +143,6 @@ class TestND(unittest.TestCase):
         with self.assertRaises(ValueError):
             rt2tr(np.ones((3, 3)), [1, 2, 3], check=True)
 
-    @unittest.skipUnless(_symbolics, "sympy required")
     def test_rt2tr_sym(self):
         theta = symbol("theta")
         R = rotx(theta)
@@ -393,7 +409,6 @@ class TestND(unittest.TestCase):
         a = np.array([[1, 2], [3, 4]])
         self.assertAlmostEqual(np.linalg.det(a), det(a))
 
-    @unittest.skipUnless(_symbolics, "sympy required")
     def test_det_sym(self):
         x, y = symbol("x y")
         a = np.array([[x, y], [y, x]])

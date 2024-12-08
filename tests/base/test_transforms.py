@@ -13,7 +13,32 @@ import unittest
 from math import pi
 from scipy.linalg import logm, expm
 
-from spatialmath.base import *
+# from spatialmath.base import *
+from spatialmath.base import (
+    vex,
+    skew,
+    vexa,
+    skewa,
+    trlog,
+    trexp,
+    trnorm,
+    transl,
+    isrot,
+    ishom,
+    isrot2,
+    ishom2,
+    rotx,
+    roty,
+    rotz,
+    trotx,
+    troty,
+    trotz,
+    t2r,
+    trexp2,
+    rot2,
+    transl2,
+    trot2,
+)
 
 
 class TestLie(unittest.TestCase):

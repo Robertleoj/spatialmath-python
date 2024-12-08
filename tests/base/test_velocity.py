@@ -12,8 +12,26 @@ import numpy.testing as nt
 import unittest
 from math import pi
 
-from spatialmath.base.transforms3d import *
-from spatialmath.base.numeric import *
+# from spatialmath.base.transforms3d import *
+# from spatialmath.base.numeric import *
+from spatialmath.base import (
+    numjac,
+    rpy2r,
+    rpy2jac,
+    eul2r,
+    eul2jac,
+    exp2r,
+    exp2jac,
+    rotx,
+    roty,
+    rotz,
+    numhess,
+    transl,
+    eul2tr,
+    tr2x,
+    x2tr,
+)
+from spatialmath.base.transforms3d import rotvelxform, rotvelxform_inv_dot
 
 
 class TestVelocity(unittest.TestCase):

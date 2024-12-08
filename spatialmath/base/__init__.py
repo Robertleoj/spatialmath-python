@@ -13,6 +13,7 @@ from spatialmath.base.animate import *  # lgtm [py/polluting-import]
 from spatialmath.base.graphics import *  # lgtm [py/polluting-import]
 from spatialmath.base.numeric import *  # lgtm [py/polluting-import]
 
+
 from spatialmath.base.argcheck import (
     assertmatrix,
     ismatrix,

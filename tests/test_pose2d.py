@@ -3,15 +3,14 @@ import matplotlib.pyplot as plt
 import unittest
 import sys
 import pytest
-
-"""
-we will assume that the primitives rotx,trotx, etc. all work
-"""
 from math import pi
-from spatialmath.pose2d import *
+import math
+import numpy as np
 
-# from spatialmath import super_pose as sp
-from spatialmath.base import *
+# from spatialmath.pose2d import *
+# from spatialmath.base import *
+from spatialmath import SO2, SE2
+from spatialmath.base import rot2, skew, transl2, trot2, skewa, t2r, h2e, e2h, isskewa
 from spatialmath.baseposematrix import BasePoseMatrix
 from spatialmath.twist import BaseTwist
 
@@ -203,18 +202,6 @@ class TestSO2(unittest.TestCase):
 
         self.assertFalse(r.isSE)
 
-    def test_printline(self):
-        R = SO2(0.3)
-
-        R.printline()
-        # s = R.printline(file=None)
-        # self.assertIsInstance(s, str)
-
-        R = SO2([0.3, 0.4, 0.5])
-        s = R.printline(file=None)
-        # self.assertIsInstance(s, str)
-        # self.assertEqual(s.count('\n'), 2)
-
     @pytest.mark.skipif(
         sys.platform.startswith("darwin") and sys.version_info < (3, 11),
         reason="tkinter bug with mac",
@@ -224,10 +211,6 @@ class TestSO2(unittest.TestCase):
 
         R = SO2(0.3)
         R.plot(block=False)
-
-        R2 = SO2(0.6)
-        # R.animate()
-        # R.animate(start=R2)
 
 
 # ============================== SE2 =====================================#

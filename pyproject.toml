@@ -45,6 +45,7 @@ matplotlib = ">=3.9.3"
 ansitable = "*"
 typing_extensions = "*"
 pre-commit = "*"
+sympy = "^1.13.3"
 
 [tool.poetry.group.dev.dependencies]
 sympy = "*"
@@ -71,6 +72,9 @@ build-backend = "poetry.core.masonry.api"
 line-length = 88
 target-version = "py38"
 exclude = ["camera_derivatives.py"]
+
+[tool.ruff.lint]
+ignore = ["E741", "E731"]
 
 [tool.ruff.format]
 quote-style = "double"

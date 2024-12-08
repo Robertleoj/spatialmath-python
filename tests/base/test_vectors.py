@@ -1,28 +1,36 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Apr 10 14:19:04 2020
-
-@author: corkep
-
-"""
-
 import numpy as np
 import numpy.testing as nt
 import unittest
 from math import pi
 import math
+from spatialmath.base.vectors import (
+    unitvec,
+    colvec,
+    isunitvec,
+    norm,
+    normsq,
+    cross,
+    isunittwist,
+    isunittwist2,
+    unittwist,
+    unittwist_norm,
+    unittwist2,
+    unittwist2_norm,
+    iszerovec,
+    iszero,
+    angdiff,
+    wrap_0_2pi,
+    wrap_mpi_pi,
+    wrap_0_pi,
+    wrap_mpi2_pi2,
+    angle_wrap,
+    angle_mean,
+    angle_std,
+    removesmall,
+)
+from spatialmath.base.symbolic import symbol, sqrt
 
-from spatialmath.base.vectors import *
 
-try:
-    import sympy as sp
-
-    from spatialmath.base.symbolic import *
-
-    _symbolics = True
-except ImportError:
-    _symbolics = False
 import matplotlib.pyplot as plt
 
 
@@ -90,7 +98,6 @@ class TestVector(unittest.TestCase):
         self.assertAlmostEqual(normsq([1, 2, 3]), 14)
         self.assertAlmostEqual(normsq(np.r_[1, 2, 3]), 14)
 
-    @unittest.skipUnless(_symbolics, "sympy required")
     def test_norm_sym(self):
         x, y = symbol("x y")
         v = [x, y]

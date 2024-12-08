@@ -7,18 +7,6 @@ import unittest
 from spatialmath import DualQuaternion, UnitDualQuaternion, Quaternion, SE3
 
 
-def qcompare(x, y):
-    if isinstance(x, Quaternion):
-        x = x.vec
-    elif isinstance(x, SMPose):
-        x = x.A
-    if isinstance(y, Quaternion):
-        y = y.vec
-    elif isinstance(y, SMPose):
-        y = y.A
-    nt.assert_array_almost_equal(x, y)
-
-
 class TestDualQuaternion(unittest.TestCase):
     def test_init(self):
         dq = DualQuaternion(Quaternion([1.0, 2, 3, 4]), Quaternion([5.0, 6, 7, 8]))
@@ -41,13 +29,6 @@ class TestDualQuaternion(unittest.TestCase):
     def test_conj(self):
         dq = DualQuaternion(Quaternion([1.0, 2, 3, 4]), Quaternion([5.0, 6, 7, 8]))
         nt.assert_array_almost_equal(dq.conj().vec, np.r_[1, -2, -3, -4, 5, -6, -7, -8])
-
-    # def test_norm(self):
-    #     q1 = Quaternion([1.,2,3,4])
-    #     q2 = Quaternion([5.,6,7,8])
-
-    #     dq = DualQuaternion(q1, q2)
-    #     nt.assert_array_almost_equal(dq.norm(), (q1.norm(), q2.norm()))
 
     def test_plus(self):
         dq = DualQuaternion(Quaternion([1.0, 2, 3, 4]), Quaternion([5.0, 6, 7, 8]))

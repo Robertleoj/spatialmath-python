@@ -12,7 +12,7 @@ import math
 import pytest
 import sys
 
-from spatialmath.base.transforms3d import *
+from spatialmath.base.transforms3d import trplot, transl, trotx, tranimate
 
 import matplotlib.pyplot as plt
 

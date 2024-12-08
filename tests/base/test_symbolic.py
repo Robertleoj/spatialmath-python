@@ -1,18 +1,23 @@
 import unittest
 import math
+import sympy as sp
 
-try:
-    import sympy as sp
-
-    _symbolics = True
-except ImportError:
-    _symbolics = False
-
-from spatialmath.base.symbolic import *
+# from spatialmath.base.symbolic import *
+from spatialmath.base.symbolic import (
+    symbol,
+    sin,
+    cos,
+    sqrt,
+    simplify,
+    zero,
+    one,
+    negative_one,
+    pi,
+    issymbol,
+)
 
 
 class Test_symbolic(unittest.TestCase):
-    @unittest.skipUnless(_symbolics, "sympy required")
     def test_symbol(self):
         theta = symbol("theta")
         self.assertTrue(isinstance(theta, sp.Expr))
@@ -36,7 +41,6 @@ class Test_symbolic(unittest.TestCase):
             self.assertTrue(isinstance(_, sp.Expr))
             self.assertTrue(_.is_real)
 
-    @unittest.skipUnless(_symbolics, "sympy required")
     def test_issymbol(self):
         theta = symbol("theta")
         self.assertFalse(issymbol(3))
@@ -44,7 +48,6 @@ class Test_symbolic(unittest.TestCase):
         self.assertFalse(issymbol([1, 2]))
         self.assertTrue(issymbol(theta))
 
-    @unittest.skipUnless(_symbolics, "sympy required")
     def test_functions(self):
         theta = symbol("theta")
         self.assertTrue(isinstance(sin(theta), sp.Expr))
@@ -59,7 +62,6 @@ class Test_symbolic(unittest.TestCase):
         x = (theta - 1) * (theta + 1) - theta**2
         self.assertTrue(math.isclose(simplify(x).evalf(), -1))
 
-    @unittest.skipUnless(_symbolics, "sympy required")
     def test_constants(self):
         x = zero()
         self.assertTrue(isinstance(x, sp.Expr))

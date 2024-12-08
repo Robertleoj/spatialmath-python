@@ -5,7 +5,7 @@ import numpy as np
 from matplotlib import colors
 from typing import Callable
 from numpy.typing import NDArray
-from abc import overload
+from typing import overload
 
 from spatialmath import base as smb
 from spatialmath.base.types import (

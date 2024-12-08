@@ -16,7 +16,29 @@ from scipy.linalg import logm
 import pytest
 import sys
 
-from spatialmath.base.transforms2d import *
+# from spatialmath.base.transforms2d import *
+from spatialmath.base.transforms2d import (
+    rot2,
+    trot2,
+    trlog2,
+    trexp2,
+    trnorm2,
+    transl2,
+    pos2tr2,
+    tr2jac2,
+    trinv2,
+    tradjoint2,
+    points2tr2,
+    xyt2tr,
+    isrot2,
+    ishom2,
+    tr2pos2,
+    ICP2d,
+    trprint2,
+    trinterp2,
+    trplot2,
+)
+from spatialmath.base import smb
 from spatialmath.base.transformsNd import (
     isR,
     t2r,
@@ -224,7 +246,6 @@ class Test2D(unittest.TestCase):
         nt.assert_equal(ishom2(T, True), False)
 
     def test_trinterp2(self):
-        R0 = rot2(-0.3)
         R1 = rot2(0.3)
 
         nt.assert_array_almost_equal(trinterp2(start=None, end=R1, s=0), np.eye(2))

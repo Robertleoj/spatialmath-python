@@ -1,71 +1,12 @@
-# Part of Spatial Math Toolbox for Python
-# Copyright (c) 2000 Peter Corke
-# MIT Licence, see details in top-level file: LICENCE
-
-"""
-This package provides a light-weight wrapper to support use of SymPy.  It
-generalizes some common functions so that they can accept numerical or
-Symbolic arguments.
-
-If SymPy is not installed then only the standard numeric operations are
-supported.
-"""
-
 import math
-from spatialmath.base.types import *
+from typing import Any, overload
+import sympy
+from sympy import Symbol
 
-try:  # pragma: no cover
-    # print('Using SymPy')
-    import sympy
 
-    _symbolics = True
-    symtype = (sympy.Expr,)
-    from sympy import Symbol
-
-except ImportError:  # pragma: no cover
-    # SymPy is not installed
-    _symbolics = False
-    symtype = ()
-    Symbol = Any
-
+symtype = (sympy.Expr,)
 
 # ---------------------------------------------------------------------------------------#
-
-if _symbolics:
-
-    def symbol(
-        name: str, real: Optional[bool] = True
-    ) -> Union[Symbol, Tuple[Symbol, ...]]:
-        """
-        Create symbolic variables
-
-        :param name: symbol names
-        :type name: str
-        :param real: assume variable is real, defaults to True
-        :type real: bool, optional
-        :return: SymPy symbols
-        :rtype: sympy
-
-        .. runblock:: pycon
-
-            >>> from spatialmath.base.symbolic import *
-            >>> theta = symbol('theta')
-            >>> theta
-            >>> theta, psi = symbol('theta psi')
-            >>> theta
-            >>> psi
-            >>> q = symbol('q_:6')
-            >>> q
-
-        .. note:: In Jupyter symbols are pretty printed.
-
-            - symbols named after greek letters will appear as greek letters
-            - underscore means subscript as it does in LaTex, so the symbols ``q``
-            above will be subscripted.
-
-        :seealso: :func:`sympy.symbols`
-        """
-        return sympy.symbols(name, real=real)
 
 
 def issymbol(var: Any) -> bool:
@@ -84,13 +25,10 @@ def issymbol(var: Any) -> bool:
         >>> issymbol(3.4)
 
     """
-    if _symbolics:
-        if isinstance(var, (list, tuple)):
-            return any([isinstance(x, symtype) for x in var])
-        else:
-            return isinstance(var, symtype)
+    if isinstance(var, (list, tuple)):
+        return any([isinstance(x, symtype) for x in var])
     else:
-        return False
+        return isinstance(var, symtype)
 
 
 @overload
@@ -316,10 +254,7 @@ def simplify(x: Symbol) -> Symbol:
 
     :seealso: :func:`sympy.simplify`
     """
-    if _symbolics:
-        return sympy.simplify(x)
-    else:
-        return x
+    return sympy.simplify(x)
 
 
 def det(x):
