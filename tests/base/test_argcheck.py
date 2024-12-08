@@ -3,7 +3,19 @@ import numpy as np
 import numpy.testing as nt
 import math
 
-from spatialmath.base.argcheck import ismatrix, assertmatrix, getmatrix, verifymatrix, getunit, isvector, getvector, isnumberlist, isvectorlist, islistof
+from spatialmath.base.argcheck import (
+    ismatrix,
+    assertmatrix,
+    getmatrix,
+    verifymatrix,
+    getunit,
+    isvector,
+    getvector,
+    isnumberlist,
+    isvectorlist,
+    islistof,
+)
+
 
 class Test_check(unittest.TestCase):
     def test_ismatrix(self):

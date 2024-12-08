@@ -1,47 +1,15 @@
-# Part of Spatial Math Toolbox for Python
-# Copyright (c) 2000 Peter Corke
-# MIT Licence, see details in top-level file: LICENCE
 from __future__ import annotations
 
 import numpy as np
-
-# try:  # pragma: no cover
-#     # print('Using SymPy')
-#     from sympy.core.singleton import S
-
-#     _symbolics = True
-
-# except ImportError:  # pragma: no cover
-#     _symbolics = False
-
+from numpy.typing import NDArray
 import spatialmath.base as smb
-from spatialmath.base.types import *
+from typing import TextIO, Callable
+from spatialmath.base.types import Rn
 from spatialmath.baseposelist import BasePoseList
+from colored import fg, bg, attr
+from ansitable import ANSIMatrix
 
 _eps = np.finfo(np.float64).eps
-
-# colored printing of matrices to the terminal
-#   colored package has much finer control than colorama, but the latter is available by default with anaconda
-try:
-    from colored import fg, bg, attr
-
-    _colored = True
-    # print('using colored output')
-except ImportError:
-    # print('colored not found')
-    _colored = False
-except AttributeError:
-    # print('colored failed to load, can happen from MATLAB import')
-    _colored = False
-
-try:
-    from ansitable import ANSIMatrix
-
-    _ANSIMatrix = True
-    # print('using colored output')
-except ImportError:
-    # print('colored not found')
-    _ANSIMatrix = False
 
 
 class BasePoseMatrix(BasePoseList):
@@ -121,7 +89,6 @@ class BasePoseMatrix(BasePoseList):
     _format = "{:< 9.4g}"
     _suppress_small = True
     _suppress_tol = 100
-    _color = _colored
     _ansimatrix = False
     _ansiformatter = None
 
@@ -301,7 +268,7 @@ class BasePoseMatrix(BasePoseList):
 
     # ----------------------- functions
 
-    def det(self) -> Tuple[float, Rn]:
+    def det(self) -> float | Rn:
         """
         Determinant of rotational component (superclass method)
 
@@ -333,7 +300,7 @@ class BasePoseMatrix(BasePoseList):
             else:
                 return [np.linalg.det(T[:2, :2]) for T in self.data]
 
-    def log(self, twist: Optional[bool] = False) -> Union[NDArray, List[NDArray]]:
+    def log(self, twist: bool = False) -> NDArray | list[NDArray]:
         """
         Logarithm of pose (superclass method)
 
@@ -379,10 +346,10 @@ class BasePoseMatrix(BasePoseList):
 
     def interp(
         self,
-        end: Optional[bool] = None,
-        s: Union[int, float] = None,
+        end: smb.SE3 | None = None,
+        s: int | float = None,
         shortest: bool = True,
-    ) -> Self:
+    ) -> BasePoseMatrix:
         """
         Interpolate between poses (superclass method)
 
@@ -454,80 +421,80 @@ class BasePoseMatrix(BasePoseList):
                 ]
             )
 
-    def interp1(self, s: float = None) -> Self:
-        """
-        Interpolate pose (superclass method)
+    # def interp1(self, s: float = None) -> BasePoseMatrix:
+    #     """
+    #     Interpolate pose (superclass method)
 
-        :param end: final pose
-        :type end: same as ``self``
-        :param s: interpolation coefficient, range 0 to 1
-        :type s: array_like
-        :return: interpolated pose
-        :rtype: SO2, SE2, SO3, SE3 instance
+    #     :param end: final pose
+    #     :type end: same as ``self``
+    #     :param s: interpolation coefficient, range 0 to 1
+    #     :type s: array_like
+    #     :return: interpolated pose
+    #     :rtype: SO2, SE2, SO3, SE3 instance
 
-        - ``X.interp(s)`` interpolates pose between identity when s=0, and X when s=1.
+    #     - ``X.interp(s)`` interpolates pose between identity when s=0, and X when s=1.
 
-            ======  ======  ===========  ===============================
-            len(X)  len(s)  len(result)  Result
-            ======  ======  ===========  ===============================
-            1       1       1            Y = interp(X, s)
-            M       1       M            Y[i] = interp(X[i], s)
-            1       M       M            Y[i] = interp(X, s[i])
-            ======  ======  ===========  ===============================
+    #         ======  ======  ===========  ===============================
+    #         len(X)  len(s)  len(result)  Result
+    #         ======  ======  ===========  ===============================
+    #         1       1       1            Y = interp(X, s)
+    #         M       1       M            Y[i] = interp(X[i], s)
+    #         1       M       M            Y[i] = interp(X, s[i])
+    #         ======  ======  ===========  ===============================
 
-        Example::
+    #     Example::
 
-            >>> x = SE3.Rx(0.3)
-            >>> print(x.interp(0))
-            SE3(array([[1., 0., 0., 0.],
-                       [0., 1., 0., 0.],
-                       [0., 0., 1., 0.],
-                       [0., 0., 0., 1.]]))
-            >>> print(x.interp(1))
-            SE3(array([[ 1.        ,  0.        ,  0.        ,  0.        ],
-                       [ 0.        ,  0.95533649, -0.29552021,  0.        ],
-                       [ 0.        ,  0.29552021,  0.95533649,  0.        ],
-                       [ 0.        ,  0.        ,  0.        ,  1.        ]]))
-            >>> y = x.interp(x, np.linspace(0, 1, 10))
-            >>> len(y)
-            10
-            >>> y[5]
-            SE3(array([[ 1.        ,  0.        ,  0.        ,  0.        ],
-                       [ 0.        ,  0.98614323, -0.16589613,  0.        ],
-                       [ 0.        ,  0.16589613,  0.98614323,  0.        ],
-                       [ 0.        ,  0.        ,  0.        ,  1.        ]]))
+    #         >>> x = SE3.Rx(0.3)
+    #         >>> print(x.interp(0))
+    #         SE3(array([[1., 0., 0., 0.],
+    #                    [0., 1., 0., 0.],
+    #                    [0., 0., 1., 0.],
+    #                    [0., 0., 0., 1.]]))
+    #         >>> print(x.interp(1))
+    #         SE3(array([[ 1.        ,  0.        ,  0.        ,  0.        ],
+    #                    [ 0.        ,  0.95533649, -0.29552021,  0.        ],
+    #                    [ 0.        ,  0.29552021,  0.95533649,  0.        ],
+    #                    [ 0.        ,  0.        ,  0.        ,  1.        ]]))
+    #         >>> y = x.interp(x, np.linspace(0, 1, 10))
+    #         >>> len(y)
+    #         10
+    #         >>> y[5]
+    #         SE3(array([[ 1.        ,  0.        ,  0.        ,  0.        ],
+    #                    [ 0.        ,  0.98614323, -0.16589613,  0.        ],
+    #                    [ 0.        ,  0.16589613,  0.98614323,  0.        ],
+    #                    [ 0.        ,  0.        ,  0.        ,  1.        ]]))
 
-        Notes:
+    #     Notes:
 
-        #. For SO3 and SE3 rotation is interpolated using quaternion spherical linear interpolation (slerp).
+    #     #. For SO3 and SE3 rotation is interpolated using quaternion spherical linear interpolation (slerp).
 
-        :seealso: :func:`interp`, :func:`~spatialmath.base.transforms3d.trinterp`, :func:`~spatialmath.base.quaternions.qslerp`, :func:`~spatialmath.smb.transforms2d.trinterp2`
+    #     :seealso: :func:`interp`, :func:`~spatialmath.base.transforms3d.trinterp`, :func:`~spatialmath.base.quaternions.qslerp`, :func:`~spatialmath.smb.transforms2d.trinterp2`
 
-        :SymPy: not supported
-        """
-        s = smb.getvector(s)
-        s = np.clip(s, 0, 1)
+    #     :SymPy: not supported
+    #     """
+    #     s = smb.getvector(s)
+    #     s = np.clip(s, 0, 1)
 
-        if self.N == 2:
-            # SO(2) or SE(2)
-            if len(s) > 1:
-                assert len(self) == 1, "if len(s) > 1, len(X) must == 1"
-                return self.__class__([smb.trinterp2(start, self.A, s=_s) for _s in s])
-            else:
-                return self.__class__(
-                    [smb.trinterp2(start, x, s=s[0]) for x in self.data]
-                )
-        elif self.N == 3:
-            # SO(3) or SE(3)
-            if len(s) > 1:
-                assert len(self) == 1, "if len(s) > 1, len(X) must == 1"
-                return self.__class__([smb.trinterp(None, self.A, s=_s) for _s in s])
-            else:
-                return self.__class__(
-                    [smb.trinterp(None, x, s=s[0]) for x in self.data]
-                )
+    #     if self.N == 2:
+    #         # SO(2) or SE(2)
+    #         if len(s) > 1:
+    #             assert len(self) == 1, "if len(s) > 1, len(X) must == 1"
+    #             return self.__class__([smb.trinterp2(start, self.A, s=_s) for _s in s])
+    #         else:
+    #             return self.__class__(
+    #                 [smb.trinterp2(start, x, s=s[0]) for x in self.data]
+    #             )
+    #     elif self.N == 3:
+    #         # SO(3) or SE(3)
+    #         if len(s) > 1:
+    #             assert len(self) == 1, "if len(s) > 1, len(X) must == 1"
+    #             return self.__class__([smb.trinterp(None, self.A, s=_s) for _s in s])
+    #         else:
+    #             return self.__class__(
+    #                 [smb.trinterp(None, x, s=s[0]) for x in self.data]
+    #             )
 
-    def norm(self) -> Self:
+    def norm(self) -> BasePoseMatrix:
         """
         Normalize pose (superclass method)
 
@@ -561,7 +528,7 @@ class BasePoseMatrix(BasePoseList):
         else:
             return self.__class__([smb.trnorm(x) for x in self.data])
 
-    def simplify(self) -> Self:
+    def simplify(self) -> BasePoseMatrix:
         """
         Symbolically simplify matrix values (superclass method)
 
@@ -637,7 +604,7 @@ class BasePoseMatrix(BasePoseList):
 
     # ----------------------- i/o stuff
 
-    def print(self, label: Optional[str] = None, file: Optional[TextIO] = None) -> None:
+    def print(self, label: str | None = None, file: TextIO | None = None) -> None:
         """
         Print pose as a matrix (superclass method)
 
@@ -878,7 +845,7 @@ class BasePoseMatrix(BasePoseList):
                 * white: constant elements
 
         """
-        if _ANSIMatrix and self._ansimatrix:
+        if self._ansimatrix is not None:
             return self._string_matrix()
         else:
             return self._string_color(color=True)
@@ -889,7 +856,7 @@ class BasePoseMatrix(BasePoseList):
 
         return "\n".join([self._ansiformatter.str(A) for A in self.data])
 
-    def _string_color(self, color: Optional[bool] = False) -> str:
+    def _string_color(self, color: bool = False) -> str:
         """
         Pretty print the matrix value
 
@@ -1052,7 +1019,7 @@ class BasePoseMatrix(BasePoseList):
                 return smb.tranimate(self.A, start=start, *args, **kwargs)
 
     # ------------------------------------------------------------------------ #
-    def prod(self, norm=False, check=True) -> Self:
+    def prod(self, norm=False, check=True) -> BasePoseMatrix:
         r"""
         Product of elements (superclass method)
 
@@ -1084,7 +1051,7 @@ class BasePoseMatrix(BasePoseList):
             Tprod = smb.trnorm(Tprod)
         return self.__class__(Tprod, check=check)
 
-    def __pow__(self, n: int) -> Self:
+    def __pow__(self, n: int) -> BasePoseMatrix:
         """
         Overloaded ``**`` operator (superclass method)
 
@@ -1198,7 +1165,7 @@ class BasePoseMatrix(BasePoseList):
             >>> SE3.Rx(pi/2) * np.r_[0, 0, 1]
             array([ 0.000000e+00, -1.000000e+00,  6.123234e-17])
         """
-        if type(left) == type(right):
+        if type(left) is type(right):
             # print('*: pose x pose')
             return left.__class__(left._op2(right, lambda x, y: x @ y), check=False)
 
@@ -1550,7 +1517,7 @@ class BasePoseMatrix(BasePoseList):
         # TODO allow class +/- a conformant array
         return left._op2(right, lambda x, y: x - y)
 
-    def __rsub__(right, left: Self):  # pylint: disable=no-self-argument
+    def __rsub__(right, left: BasePoseMatrix):  # pylint: disable=no-self-argument
         """
         Overloaded ``-`` operator (superclass method)
 
@@ -1566,7 +1533,7 @@ class BasePoseMatrix(BasePoseList):
         """
         return -right.__sub__(left)
 
-    def __isub__(left, right: Self):  # pylint: disable=no-self-argument
+    def __isub__(left, right: BasePoseMatrix):  # pylint: disable=no-self-argument
         """
         Overloaded ``-=`` operator (superclass method)
 
@@ -1583,7 +1550,7 @@ class BasePoseMatrix(BasePoseList):
         """
         return left.__sub__(right)
 
-    def __eq__(left, right: Self) -> bool:  # pylint: disable=no-self-argument
+    def __eq__(left, right: BasePoseMatrix) -> bool:  # pylint: disable=no-self-argument
         """
         Overloaded ``==`` operator (superclass method)
 
@@ -1610,7 +1577,7 @@ class BasePoseMatrix(BasePoseList):
         """
         return (
             left._op2(right, lambda x, y: np.allclose(x, y))
-            if type(left) == type(right)
+            if type(left) is type(right)
             else False
         )
 
@@ -1642,7 +1609,7 @@ class BasePoseMatrix(BasePoseList):
         eq = left == right
         return not eq if isinstance(eq, bool) else [not x for x in eq]
 
-    def _op2(left, right: Self, op: Callable):  # pylint: disable=no-self-argument
+    def _op2(left, right: BasePoseMatrix, op: Callable):  # pylint: disable=no-self-argument
         """
         Perform binary operation
 

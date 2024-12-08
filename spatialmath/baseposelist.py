@@ -1,17 +1,12 @@
-"""
-Provide list super powers for spatial math objects.
-"""
-
-# pylint: disable=invalid-name
 from __future__ import annotations
+from typing import Any, Callable, Type
 from collections import UserList
 from abc import ABC, abstractproperty, abstractstaticmethod
 import copy
 import numpy as np
+from numpy.typing import NDArray
 from spatialmath.base.argcheck import isnumberlist, isscalar
-from spatialmath.base.types import *
-
-_numtypes = (int, np.int64, float, np.float64)
+# from spatialmath.base.types import *
 
 
 class BasePoseList(UserList, ABC):
@@ -85,7 +80,7 @@ class BasePoseList(UserList, ABC):
             return None
 
     @classmethod
-    def Empty(cls) -> Self:
+    def Empty(cls) -> BasePoseList:
         """
         Construct an empty instance (BasePoseList superclass method)
 
@@ -104,7 +99,7 @@ class BasePoseList(UserList, ABC):
         return x
 
     @classmethod
-    def Alloc(cls, n: Optional[int] = 1) -> Self:
+    def Alloc(cls, n: int = 1) -> BasePoseList:
         """
         Construct an instance with N default values (BasePoseList superclass method)
 
@@ -137,9 +132,7 @@ class BasePoseList(UserList, ABC):
         x.data = [cls._identity() for i in range(n)]  # make n copies of the data
         return x
 
-    def arghandler(
-        self, arg: Any, convertfrom: Tuple = (), check: Optional[bool] = True
-    ) -> bool:
+    def arghandler(self, arg: Any, convertfrom: tuple = (), check: bool = True) -> bool:
         """
         Standard constructor support (BasePoseList superclass method)
 
@@ -199,10 +192,10 @@ class BasePoseList(UserList, ABC):
                 # possibly a list of numpy arrays
                 self.data = [self._import(x, check=check) for x in arg]
 
-            elif type(arg[0]) == type(self):
+            elif isinstance(arg[0], self.__class__):
                 # possibly a list of objects of same type
                 assert all(
-                    map(lambda x: type(x) == type(self), arg)
+                    map(lambda x: isinstance(x, self.__class__), arg)
                 ), "elements of list are incorrect type"
                 self.data = [x.A for x in arg]
 
@@ -252,7 +245,7 @@ class BasePoseList(UserList, ABC):
         return self.data[0].__array_interface__
 
     @property
-    def _A(self) -> Union[List[NDArray], NDArray]:
+    def _A(self) -> list[NDArray] | NDArray:
         """
         Spatial vector as an array
         :return: Moment vector
@@ -265,7 +258,7 @@ class BasePoseList(UserList, ABC):
             return self.data
 
     @property
-    def A(self) -> Union[List[NDArray], NDArray]:
+    def A(self) -> list[NDArray] | NDArray:
         """
         Array value of an instance (BasePoseList superclass method)
 
@@ -286,7 +279,7 @@ class BasePoseList(UserList, ABC):
 
     # ------------------------------------------------------------------------ #
 
-    def __getitem__(self, i: Union[int, slice]) -> BasePoseList:
+    def __getitem__(self, i: int | slice) -> BasePoseList:
         """
         Access value of an instance (BasePoseList superclass method)
 
@@ -353,7 +346,7 @@ class BasePoseList(UserList, ABC):
         where ``X`` is any of the SMTB classes.
 
         """
-        if not type(self) == type(value):
+        if not isinstance(value, self.__class__):
             raise ValueError("can't insert different type of object")
         if len(value) > 1:
             raise ValueError(
@@ -396,7 +389,7 @@ class BasePoseList(UserList, ABC):
         where ``X`` is any of the SMTB classes.
         """
         # print('in append method')
-        if not type(self) == type(item):
+        if not isinstance(item, self.__class__):
             raise ValueError("can't append different type of object")
         if len(item) > 1:
             raise ValueError("can't append a multivalued instance - use extend")
@@ -424,7 +417,7 @@ class BasePoseList(UserList, ABC):
         where ``X`` is any of the SMTB classes.
         """
         # print('in extend method')
-        if not type(self) == type(iterable):
+        if type(self) is not type(iterable):
             raise ValueError("can't append different type of object")
         super().extend(iterable._A)
 
@@ -457,7 +450,7 @@ class BasePoseList(UserList, ABC):
         .. note:: If ``i`` is beyond the end of the list, the item is appended
             to the list
         """
-        if not type(self) == type(item):
+        if not isinstance(item, self.__class__):
             raise ValueError("can't insert different type of object")
         if len(item) > 1:
             raise ValueError(
@@ -465,7 +458,7 @@ class BasePoseList(UserList, ABC):
             )
         super().insert(i, item._A)
 
-    def pop(self, i: Optional[int] = -1) -> Self:
+    def pop(self, i: int | None = -1) -> BasePoseList:
         """
         Pop value from an instance (BasePoseList superclass method)
 
@@ -498,9 +491,9 @@ class BasePoseList(UserList, ABC):
         self,
         right: BasePoseList,
         op: Callable,
-        op2: Optional[Callable] = None,
-        list1: Optional[bool] = True,
-    ) -> List:
+        op2: Callable | None = None,
+        list1: bool | None = True,
+    ) -> list:
         """
         Perform binary operation
 
@@ -592,42 +585,9 @@ class BasePoseList(UserList, ABC):
             else:
                 raise ValueError("length of lists to == must be same length")
 
-        # if isinstance(right, left.__class__):
-        #     # class * class
-        #     if len(left) == 1:
-        #         # singleton *
-        #         if len(right) == 1:
-        #             # singleton * singleton
-        #             if list1:
-        #                 return [op(left._A, right._A)]
-        #             else:
-        #                 return op(left.A, right.A)
-        #         else:
-        #             # singleton * non-singleton
-        #             return [op(left.A, x) for x in right.A]
-        #     else:
-        #         # non-singleton *
-        #         if len(right) == 1:
-        #             # non-singleton * singleton
-        #             return [op(x, right.A) for x in left.A]
-        #         elif len(left) == len(right):
-        #             # non-singleton * non-singleton
-        #             return [op(x, y) for (x, y) in zip(left.A, right.A)]
-        #         else:
-        #             raise ValueError('length of lists to == must be same length')
-        # elif op2 is not None and isinstance(right, _numtypes) or (isinstance(right, np.ndarray)):
-        #     # class * (scalar or array)
-        #     if len(left) == 1:
-        #         if list1:
-        #             return [op2(left.A, right)]
-        #         else:
-        #             return op2(left.A, right)
-        #     else:
-        #         return [op(x, right) for x in left.A]
-
     def unop(
-        self, op: Callable, matrix: Optional[bool] = False
-    ) -> Union[NDArray, List]:
+        self, op: Callable, matrix: bool | None = False
+    ) -> NDArray | list[NDArray]:
         """
         Perform unary operation
 

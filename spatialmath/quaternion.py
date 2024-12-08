@@ -22,7 +22,17 @@ from typing import Any
 import spatialmath.base as smb
 from spatialmath.pose3d import SO3, SE3
 from spatialmath.baseposelist import BasePoseList
-from spatialmath.base.types import ArrayLike3, ArrayLike4, R3, R4, R4x4, ArrayLike, SO3Array, ArrayLike2, RNx3
+from spatialmath.base.types import (
+    ArrayLike3,
+    ArrayLike4,
+    R3,
+    R4,
+    R4x4,
+    ArrayLike,
+    SO3Array,
+    ArrayLike2,
+    RNx3,
+)
 
 _eps = np.finfo(np.float64).eps
 
@@ -2068,9 +2078,7 @@ class UnitQuaternion(Quaternion):
         else:
             return smb.tranimate(smb.q2r(self._A), *args, **kwargs)
 
-    def rpy(
-        self, unit: str = "rad", order: str = "zyx"
-    ) -> R3 | RNx3:
+    def rpy(self, unit: str = "rad", order: str = "zyx") -> R3 | RNx3:
         """
         Unit quaternion as roll-pitch-yaw angles
 

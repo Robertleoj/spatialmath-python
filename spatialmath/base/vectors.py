@@ -1,20 +1,16 @@
-# Part of Spatial Math Toolbox for Python
-# Copyright (c) 2000 Peter Corke
-# MIT Licence, see details in top-level file: LICENCE
-
-"""
-Functions to manipulate vectors
-
-Vector arguments are what numpy refers to as ``array_like`` and can be a list,
-tuple, numpy array, numpy row vector or numpy column vector.
-"""
-
-# pylint: disable=invalid-name
-
 import math
+from typing import overload
 import numpy as np
 from spatialmath.base.argcheck import getvector
-from spatialmath.base.types import *
+from spatialmath.base.types import (
+    ArrayLikePure,
+    ArrayLike3,
+    R3,
+    NDArray,
+    ArrayLike,
+    ArrayLike6,
+    R6,
+)
 
 try:  # pragma: no cover
     # print('Using SymPy')
@@ -174,7 +170,7 @@ def unitvec(v: ArrayLike, tol: float = 20) -> NDArray:
         raise ValueError("zero norm vector")
 
 
-def unitvec_norm(v: ArrayLike, tol: float = 20) -> Tuple[NDArray, float]:
+def unitvec_norm(v: ArrayLike, tol: float = 20) -> tuple[NDArray, float]:
     """
     Create a unit vector
 
@@ -351,7 +347,7 @@ def isunittwist2(v: ArrayLike3, tol: float = 20) -> bool:
         raise ValueError
 
 
-def unittwist(S: ArrayLike6, tol: float = 20) -> Union[R6, None]:
+def unittwist(S: ArrayLike6, tol: float = 20) -> R6 | None:
     """
     Convert twist to unit twist
 
@@ -393,8 +389,8 @@ def unittwist(S: ArrayLike6, tol: float = 20) -> Union[R6, None]:
 
 
 def unittwist_norm(
-    S: Union[R6, ArrayLike6], tol: float = 20
-) -> Tuple[Union[R6, None], Union[float, None]]:
+    S: R6 | ArrayLike6, tol: float = 20
+) -> tuple[R6 | None, float | None]:
     """
     Convert twist to unit twist and norm
 
@@ -439,7 +435,7 @@ def unittwist_norm(
     return (S / th, th)
 
 
-def unittwist2(S: ArrayLike3, tol: float = 20) -> Union[R3, None]:
+def unittwist2(S: ArrayLike3, tol: float = 20) -> R3 | None:
     """
     Convert twist to unit twist
 
@@ -480,9 +476,7 @@ def unittwist2(S: ArrayLike3, tol: float = 20) -> Union[R3, None]:
     return S / th
 
 
-def unittwist2_norm(
-    S: ArrayLike3, tol: float = 20
-) -> Tuple[Union[R3, None], Union[float, None]]:
+def unittwist2_norm(S: ArrayLike3, tol: float = 20) -> tuple[R3 | None, float | None]:
     """
     Convert twist to unit twist
 
@@ -523,7 +517,7 @@ def unittwist2_norm(
     return (S / th, th)
 
 
-def wrap_0_pi(theta: ArrayLike) -> Union[float, NDArray]:
+def wrap_0_pi(theta: ArrayLike) -> float | NDArray:
     r"""
     Wrap angle to range :math:`[0, \pi]`
 
@@ -551,7 +545,7 @@ def wrap_0_pi(theta: ArrayLike) -> Union[float, NDArray]:
         return y
 
 
-def wrap_mpi2_pi2(theta: ArrayLike) -> Union[float, NDArray]:
+def wrap_mpi2_pi2(theta: ArrayLike) -> float | NDArray:
     r"""
     Wrap angle to range :math:`[-\pi/2, \pi/2]`
 
@@ -578,7 +572,7 @@ def wrap_mpi2_pi2(theta: ArrayLike) -> Union[float, NDArray]:
         return y
 
 
-def wrap_0_2pi(theta: ArrayLike) -> Union[float, NDArray]:
+def wrap_0_2pi(theta: ArrayLike) -> float | NDArray:
     r"""
     Wrap angle to range :math:`[0, 2\pi)`
 
@@ -596,7 +590,7 @@ def wrap_0_2pi(theta: ArrayLike) -> Union[float, NDArray]:
         return y
 
 
-def wrap_mpi_pi(theta: ArrayLike) -> Union[float, NDArray]:
+def wrap_mpi_pi(theta: ArrayLike) -> float | NDArray:
     r"""
     Wrap angle to range :math:`[-\pi, \pi)`
 
@@ -612,11 +606,6 @@ def wrap_mpi_pi(theta: ArrayLike) -> Union[float, NDArray]:
         return float(y)
     else:
         return y
-
-
-# @overload
-# def angdiff(a:ArrayLike):
-#     ...
 
 
 @overload
@@ -718,7 +707,7 @@ def angle_mean(theta: ArrayLike) -> float:
     return np.arctan2(Y, X)
 
 
-def angle_wrap(theta: ArrayLike, mode: str = "-pi:pi") -> Union[float, NDArray]:
+def angle_wrap(theta: ArrayLike, mode: str = "-pi:pi") -> float | NDArray:
     """
     Generalized angle-wrapping
 

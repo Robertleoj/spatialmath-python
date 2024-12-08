@@ -46,6 +46,7 @@ ansitable = "*"
 typing_extensions = "*"
 pre-commit = "*"
 sympy = "^1.13.3"
+colored = "^2.2.4"
 
 [tool.poetry.group.dev.dependencies]
 sympy = "*"

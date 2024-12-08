@@ -1,14 +1,25 @@
-# Part of Spatial Math Toolbox for Python
-# Copyright (c) 2000 Peter Corke
-# MIT Licence, see details in top-level file: LICENCE
 from __future__ import annotations
 
 import numpy as np
+from numpy.typing import NDArray
 import math
 from collections import namedtuple
+from typing import overload, cast
 import matplotlib.pyplot as plt
 import spatialmath.base as base
-from spatialmath.base.types import *
+from spatialmath.base.types import (
+    ArrayLike,
+    ArrayLike3,
+    ArrayLike4,
+    R3,
+    R3x3,
+    ArrayLike6,
+    R6,
+    R4x4,
+    Points3,
+    Rn,
+)
+
 from spatialmath.baseposelist import BasePoseList
 import warnings
 
@@ -35,7 +46,7 @@ class Plane3:
 
     # point and normal
     @classmethod
-    def PointNormal(cls, p: ArrayLike3, n: ArrayLike3) -> Self:
+    def PointNormal(cls, p: ArrayLike3, n: ArrayLike3) -> Plane3:
         """
         Create a plane object from point and normal
 
@@ -54,7 +65,7 @@ class Plane3:
 
     # point and normal
     @classmethod
-    def ThreePoints(cls, p: R3x3) -> Self:
+    def ThreePoints(cls, p: R3x3) -> Plane3:
         """
         Create a plane object from three points
 
@@ -79,7 +90,7 @@ class Plane3:
         return cls(np.r_[n, -np.dot(n, v1)])
 
     @classmethod
-    def LinePoint(cls, l: Line3, p: ArrayLike3) -> Self:
+    def LinePoint(cls, l: Line3, p: ArrayLike3) -> Plane3:
         """
         Create a plane object from a line and point
 
@@ -98,7 +109,7 @@ class Plane3:
         return cls(np.r_[n, d])
 
     @classmethod
-    def TwoLines(cls, l1: Line3, l2: Line3) -> Self:
+    def TwoLines(cls, l1: Line3, l2: Line3) -> Plane3:
         """
         Create a plane object from two line
 
@@ -191,8 +202,8 @@ class Plane3:
 
     def plot(
         self,
-        bounds: Optional[ArrayLike] = None,
-        ax: Optional[plt.Axes] = None,
+        bounds: ArrayLike | None = None,
+        ax: plt.Axes | None = None,
         **kwargs,
     ):
         """
@@ -319,7 +330,7 @@ class Line3(BasePoseList):
         # self.__array_priority__ = 100
 
     @property
-    def shape(self) -> Tuple[int]:
+    def shape(self) -> tuple[int]:
         return (6,)
 
     @staticmethod
@@ -331,7 +342,7 @@ class Line3(BasePoseList):
         return x.shape == (6,)
 
     @classmethod
-    def Join(cls, P: ArrayLike3, Q: ArrayLike3) -> Self:
+    def Join(cls, P: ArrayLike3, Q: ArrayLike3) -> Line3:
         """
         Create 3D line from two 3D points
 
@@ -356,7 +367,7 @@ class Line3(BasePoseList):
         return cls(np.r_[v, w])
 
     @classmethod
-    def TwoPlanes(cls, pi1: Plane3, pi2: Plane3) -> Self:
+    def TwoPlanes(cls, pi1: Plane3, pi2: Plane3) -> Line3:
         r"""
         Create 3D line from intersection of two planes
 
@@ -388,12 +399,12 @@ class Line3(BasePoseList):
         return cls(np.r_[v, w])
 
     @classmethod
-    def IntersectingPlanes(cls, pi1: Plane3, pi2: Plane3) -> Self:
+    def IntersectingPlanes(cls, pi1: Plane3, pi2: Plane3) -> Line3:
         warnings.warn("use TwoPlanes method instead", DeprecationWarning)
         return cls.TwoPlanes(pi1, pi2)
 
     @classmethod
-    def PointDir(cls, point: ArrayLike3, dir: ArrayLike3) -> Self:
+    def PointDir(cls, point: ArrayLike3, dir: ArrayLike3) -> Line3:
         """
         Create 3D line from a point and direction
 
@@ -427,10 +438,9 @@ class Line3(BasePoseList):
 
         """
         # print('in append method')
-        if not type(self) == type(x):
-            raise ValueError("can only append Line3 object")
         if len(x) > 1:
             raise ValueError("cant append a Line3 sequence - use extend")
+
         super().append(x.A)
 
     @property
@@ -576,7 +586,7 @@ class Line3(BasePoseList):
         """
         return math.sqrt(np.dot(self.v, self.v) / np.dot(self.w, self.w))
 
-    def point(self, lam: Union[float, ArrayLike]) -> Points3:
+    def point(self, lam: float | ArrayLike) -> Points3:
         r"""
         Generate point on line
 
@@ -615,9 +625,7 @@ class Line3(BasePoseList):
     #  TESTS ON PLUCKER OBJECTS
     # ------------------------------------------------------------------------- #
 
-    def contains(
-        self, x: Union[R3, Points3], tol: float = 20
-    ) -> Union[bool, List[bool]]:
+    def contains(self, x: R3 | Points3, tol: float = 20) -> bool | list[bool]:
         """
         Test if points are on the line
 
@@ -805,7 +813,7 @@ class Line3(BasePoseList):
     def intersects(
         l1,
         l2: Line3,  # type:ignore
-    ) -> Union[R3, None]:  # pylint: disable=no-self-argument
+    ) -> R3 | None:  # pylint: disable=no-self-argument
         """
         Intersection point of two lines
 
@@ -854,7 +862,7 @@ class Line3(BasePoseList):
         if l1 | l2:
             # lines are parallel
             l = np.cross(
-                l1.w, l1.v - l2.v * np.dot(l1.w, l2.w) / dot(l2.w, l2.w)
+                l1.w, l1.v - l2.v * np.dot(l1.w, l2.w) / np.dot(l2.w, l2.w)
             ) / np.linalg.norm(l1.w)
         else:
             # lines are not parallel
@@ -869,7 +877,7 @@ class Line3(BasePoseList):
     def closest_to_line(
         l1,
         l2: Line3,  # type:ignore
-    ) -> Tuple[Points3, Rn]:  # pylint: disable=no-self-argument
+    ) -> tuple[Points3, Rn]:  # pylint: disable=no-self-argument
         """
         Closest point between lines
 
@@ -962,7 +970,7 @@ class Line3(BasePoseList):
         else:
             return np.array(points).T, np.array(dists)
 
-    def closest_to_point(self, x: ArrayLike3) -> Tuple[R3, float]:
+    def closest_to_point(self, x: ArrayLike3) -> tuple[R3, float]:
         """
         Point on line closest to given point
 
@@ -1049,7 +1057,7 @@ class Line3(BasePoseList):
         else:
             raise ValueError("bad arguments")
 
-    def __rmul__(right, left: SE3) -> Line3:  # type:ignore pylint: disable=no-self-argument
+    def __rmul__(right, left: base.SE3) -> Line3:  # type:ignore pylint: disable=no-self-argument
         """
         Rigid-body transformation of 3D line
 
@@ -1077,8 +1085,8 @@ class Line3(BasePoseList):
     # ------------------------------------------------------------------------- #
 
     def intersect_plane(
-        self, plane: Union[ArrayLike4, Plane3], tol: float = 20
-    ) -> Tuple[R3, float]:
+        self, plane: ArrayLike4 | Plane3, tol: float = 20
+    ) -> tuple[R3, float]:
         r"""
         Line intersection with a plane
 
@@ -1126,7 +1134,7 @@ class Line3(BasePoseList):
         else:
             return None
 
-    def intersect_volume(self, bounds: ArrayLike6) -> Tuple[Points3, Rn]:
+    def intersect_volume(self, bounds: ArrayLike6) -> tuple[Points3, Rn]:
         """
         Line intersection with a volume
 
@@ -1180,11 +1188,6 @@ class Line3(BasePoseList):
             except TypeError:
                 continue  # no intersection with this plane
 
-            # print('face %d: n=(%f, %f, %f)' % (face, plane.n[0], plane.n[1], plane.n[2]))
-            # print('       : p=(%f, %f, %f)  ' % (p[0], p[1], p[2]))
-
-            # print('face', face, ' point ', p, ' plane ', plane)
-            # print('lamda', lam, self.point(lam))
             # find if intersection point is within the cube face
             #  test x,y,z simultaneously
             k = (p >= bounds23[:, 0]) & (p <= bounds23[:, 1])
@@ -1192,8 +1195,6 @@ class Line3(BasePoseList):
             if all(k):
                 # if within bounds, add
                 intersections.append(lam)
-
-        #                     print('  HIT');
 
         # put them in ascending order
         intersections.sort()
@@ -1208,10 +1209,10 @@ class Line3(BasePoseList):
     def plot(
         self,
         *pos,
-        bounds: Optional[ArrayLike] = None,
-        ax: Optional[plt.Axes] = None,
+        bounds: ArrayLike | None = None,
+        ax: plt.Axes | None = None,
         **kwargs,
-    ) -> List[plt.Artist]:
+    ) -> list[plt.Artist]:
         """
          Plot a line
 
@@ -1324,11 +1325,6 @@ class Line3(BasePoseList):
 
         Print colorized output when variable is displayed in IPython, ie. on a line by
         itself.
-
-        Example::
-
-            In [1]: x
-
         """
         if len(self) == 1:
             p.text(str(self))
@@ -1337,22 +1333,6 @@ class Line3(BasePoseList):
                 if i > 0:
                     p.break_()
                 p.text(f"{i:3d}: {str(x)}")
-
-    #         function z = side(self1, pl2)
-    #             Plucker.side Plucker side operator
-    #
-    #             # X = SIDE(P1, P2) is the side operator which is zero whenever
-    #             # the lines P1 and P2 intersect or are parallel.
-    #
-    #             # See also Plucker.or.
-    #
-    #             if ~isa(self2, 'Plucker')
-    #                 error('SMTB:Plucker:badarg', 'both arguments to | must be Plucker objects');
-    #             end
-    #             L1 = pl1.line(); L2 = pl2.line();
-    #
-    #             z = L1([1 5 2 6 3 4]) * L2([5 1 6 2 4 3])';
-    #         end
 
     def side(self, other: Line3) -> float:
         """
@@ -1370,8 +1350,6 @@ class Line3(BasePoseList):
 
         return np.dot(self.A[[0, 4, 1, 5, 2, 3]], other.A[4, 0, 5, 1, 3, 2])
 
-    # Static factory methods for constructors from exotic representations
-
 
 class Plucker(Line3):
     def __init__(self, v=None, w=None):
@@ -1381,48 +1359,11 @@ class Plucker(Line3):
         super().__init__(v, w)
 
 
-if __name__ == "__main__":  # pragma: no cover
+if __name__ == "__main__":
     import pathlib
-
-    # L = Line3.TwoPoints((1,2,0), (1,2,1))
-    # print(L)
-    # print(L.intersect_plane([0, 0, 1, 0]))
-
-    # z = np.eye(6) * L
-
-    # L2 = SE3(2, 1, 10) * L
-    # print(L2)
-    # print(L2.intersect_plane([0, 0, 1, 0]))
-
-    # print('rx')
-    # L2 = SE3.Rx(np.pi/4) * L
-    # print(L2)
-    # print(L2.intersect_plane([0, 0, 1, 0]))
-
-    # print('ry')
-    # L2 = SE3.Ry(np.pi/4) * L
-    # print(L2)
-    # print(L2.intersect_plane([0, 0, 1, 0]))
-
-    # print('rz')
-    # L2 = SE3.Rz(np.pi/4) * L
-    # print(L2)
-    # print(L2.intersect_plane([0, 0, 1, 0]))
-
-    # base.plotvol3(10)
-    # S = Twist3.UnitRevolute([0, 0, 1], [2, 3, 2], 0.5);
-    # L = S.line()
-    # L.plot('k:', linewidth=2)
-
-    # a = Plane3([0.1, -1, -1, 2])
-    # base.plotvol3(5)
-    # a.plot(color='r', alpha=0.3)
-    # plt.show(block=True)
-
-    # a = SE3.Exp([2,0,0,0,0,0])
 
     exec(
         open(
             pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_geom3d.py"
         ).read()
-    )  # pylint: disable=exec-used
+    )

@@ -5,7 +5,20 @@ from numpy.typing import NDArray
 from typing import overload, cast
 
 import spatialmath.base as smb
-from spatialmath.base.types import SO3Array, R3x3, R3, RNx3, ArrayLike2, ArrayLike3, SE3Array, R6, R6x6, ArrayLike, R4x4, ArrayLike6
+from spatialmath.base.types import (
+    SO3Array,
+    R3x3,
+    R3,
+    RNx3,
+    ArrayLike2,
+    ArrayLike3,
+    SE3Array,
+    R6,
+    R6x6,
+    ArrayLike,
+    R4x4,
+    ArrayLike6,
+)
 from spatialmath.base.vectors import orthogonalize
 from spatialmath.baseposematrix import BasePoseMatrix
 from spatialmath.pose2d import SE2
@@ -1694,9 +1707,7 @@ class SE3(SO3):
         return cls(smb.oa2tr(o, a), check=False)
 
     @classmethod
-    def AngleAxis(
-        cls, theta: float, v: ArrayLike3, *, unit: str = "rad"
-    ) -> SE3:
+    def AngleAxis(cls, theta: float, v: ArrayLike3, *, unit: str = "rad") -> SE3:
         r"""
         Create an SE(3) pure rotation matrix from rotation angle and axis
 
