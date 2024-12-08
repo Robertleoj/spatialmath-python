@@ -1,44 +1,18 @@
-# Part of Spatial Math Toolbox for Python
-# Copyright (c) 2000 Peter Corke
-# MIT Licence, see details in top-level file: LICENCE
-
-"""
-Classes to abstract 3D pose and orientation using matrices in SE(3) and SO(3)
-
-To use::
-
-    from spatialmath.pose3d import *
-    T = SE3.Rx(0.3)
-
-    import spatialmath as sm
-    T = sm.SE3.Rx(0.3)
-
-
- .. inheritance-diagram:: spatialmath.pose3d
-    :top-classes: collections.UserList
-    :parts: 1
-
-.. image:: ../figs/pose-values.png
-"""
-
 from __future__ import annotations
 
-# pylint: disable=invalid-name
-
 import numpy as np
+from numpy.typing import NDArray
+from typing import overload, cast
 
 import spatialmath.base as smb
-from spatialmath.base.types import *
+from spatialmath.base.types import SO3Array, R3x3, R3, RNx3, ArrayLike2, ArrayLike3, SE3Array, R6, R6x6, ArrayLike, R4x4, ArrayLike6
 from spatialmath.base.vectors import orthogonalize
 from spatialmath.baseposematrix import BasePoseMatrix
 from spatialmath.pose2d import SE2
 
 from spatialmath.twist import Twist3
 
-from typing import TYPE_CHECKING, Optional
-
-if TYPE_CHECKING:
-    from spatialmath.quaternion import UnitQuaternion
+from spatialmath.quaternion import UnitQuaternion
 
 # ============================== SO3 =====================================#
 
@@ -68,10 +42,10 @@ class SO3(BasePoseMatrix):
     def __init__(self, arg: SO3Array, *, check=True): ...
 
     @overload
-    def __init__(self, arg: List[SO3Array], *, check=True): ...
+    def __init__(self, arg: list[SO3Array], *, check=True): ...
 
     @overload
-    def __init__(self, arg: List[Union[SO3, SO3Array]], *, check=True): ...
+    def __init__(self, arg: list[SO3 | SO3Array], *, check=True): ...
 
     def __init__(self, arg=None, *, check=True):
         """
@@ -109,7 +83,7 @@ class SO3(BasePoseMatrix):
 
     # ------------------------------------------------------------------------ #
     @property
-    def shape(self) -> Tuple[int, int]:
+    def shape(self) -> tuple[int, int]:
         """
         Shape of the object's interal matrix representation
 
@@ -200,7 +174,7 @@ class SO3(BasePoseMatrix):
 
     # ------------------------------------------------------------------------ #
 
-    def inv(self) -> Self:
+    def inv(self) -> SO3:
         """
         Inverse of SO(3)
 
@@ -216,7 +190,7 @@ class SO3(BasePoseMatrix):
         else:
             return SO3([x.T for x in self.A], check=False)
 
-    def eul(self, unit: str = "rad", flip: bool = False) -> Union[R3, RNx3]:
+    def eul(self, unit: str = "rad", flip: bool = False) -> R3 | RNx3:
         r"""
         SO(3) or SE(3) as Euler angles
 
@@ -240,9 +214,9 @@ class SO3(BasePoseMatrix):
         if len(self) == 1:
             return smb.tr2eul(self.A, unit=unit, flip=flip)  # type: ignore
         else:
-            return np.array([base.tr2eul(x, unit=unit, flip=flip) for x in self.A])
+            return np.array([smb.tr2eul(x, unit=unit, flip=flip) for x in self.A])
 
-    def rpy(self, unit: str = "rad", order: str = "zyx") -> Union[R3, RNx3]:
+    def rpy(self, unit: str = "rad", order: str = "zyx") -> R3 | RNx3:
         """
         SO(3) or SE(3) as roll-pitch-yaw angles
 
@@ -280,7 +254,7 @@ class SO3(BasePoseMatrix):
         else:
             return np.array([smb.tr2rpy(x, unit=unit, order=order) for x in self.A])
 
-    def angvec(self, unit: str = "rad") -> Tuple[float, R3]:
+    def angvec(self, unit: str = "rad") -> tuple[float, R3]:
         r"""
         SO(3) or SE(3) as angle and rotation vector
 
@@ -358,7 +332,7 @@ class SO3(BasePoseMatrix):
     # ---------------- variant constructors ---------------------------------- #
 
     @classmethod
-    def Rx(cls, theta: float, unit: str = "rad") -> Self:
+    def Rx(cls, theta: float, unit: str = "rad") -> SO3:
         """
         Construct a new SO(3) from X-axis rotation
 
@@ -389,7 +363,7 @@ class SO3(BasePoseMatrix):
         return cls([smb.rotx(x, unit=unit) for x in smb.getvector(theta)], check=False)
 
     @classmethod
-    def Ry(cls, theta, unit: str = "rad") -> Self:
+    def Ry(cls, theta, unit: str = "rad") -> SO3:
         """
         Construct a new SO(3) from Y-axis rotation
 
@@ -420,7 +394,7 @@ class SO3(BasePoseMatrix):
         return cls([smb.roty(x, unit=unit) for x in smb.getvector(theta)], check=False)
 
     @classmethod
-    def Rz(cls, theta, unit: str = "rad") -> Self:
+    def Rz(cls, theta, unit: str = "rad") -> SO3:
         """
         Construct a new SO(3) from Z-axis rotation
 
@@ -452,8 +426,8 @@ class SO3(BasePoseMatrix):
 
     @classmethod
     def Rand(
-        cls, N: int = 1, *, theta_range: Optional[ArrayLike2] = None, unit: str = "rad"
-    ) -> Self:
+        cls, N: int = 1, *, theta_range: ArrayLike2 | None = None, unit: str = "rad"
+    ) -> SO3:
         """
         Construct a new SO(3) from random rotation
 
@@ -489,14 +463,14 @@ class SO3(BasePoseMatrix):
 
     @overload
     @classmethod
-    def Eul(cls, *angles: float, unit: str = "rad") -> Self: ...
+    def Eul(cls, *angles: float, unit: str = "rad") -> SO3: ...
 
     @overload
     @classmethod
-    def Eul(cls, *angles: Union[ArrayLike3, RNx3], unit: str = "rad") -> Self: ...
+    def Eul(cls, *angles: ArrayLike3 | RNx3, unit: str = "rad") -> SO3: ...
 
     @classmethod
-    def Eul(cls, *angles, unit: str = "rad") -> Self:
+    def Eul(cls, *angles, unit: str = "rad") -> SO3:
         r"""
         Construct a new SO(3) from Euler angles
 
@@ -542,13 +516,11 @@ class SO3(BasePoseMatrix):
         *angles: float,
         unit: str = "rad",
         order="zyx",
-    ) -> Self: ...
+    ) -> SO3: ...
 
     @overload
     @classmethod
-    def RPY(
-        cls, *angles: Union[ArrayLike3, RNx3], unit: str = "rad", order="zyx"
-    ) -> Self: ...
+    def RPY(cls, *angles: ArrayLike3 | RNx3, unit: str = "rad", order="zyx") -> SO3: ...
 
     @classmethod
     def RPY(cls, *angles, unit="rad", order="zyx"):
@@ -611,7 +583,7 @@ class SO3(BasePoseMatrix):
             )
 
     @classmethod
-    def OA(cls, o: ArrayLike3, a: ArrayLike3) -> Self:
+    def OA(cls, o: ArrayLike3, a: ArrayLike3) -> SO3:
         """
         Construct a new SO(3) from two vectors
 
@@ -641,10 +613,10 @@ class SO3(BasePoseMatrix):
     @classmethod
     def TwoVectors(
         cls,
-        x: Optional[Union[str, ArrayLike3]] = None,
-        y: Optional[Union[str, ArrayLike3]] = None,
-        z: Optional[Union[str, ArrayLike3]] = None,
-    ) -> Self:
+        x: str | ArrayLike3 | None = None,
+        y: str | ArrayLike3 | None = None,
+        z: str | ArrayLike3 | None = None,
+    ) -> SO3:
         """
         Construct a new SO(3) from any two vectors
 
@@ -726,7 +698,7 @@ class SO3(BasePoseMatrix):
         return cls(np.c_[x, y, z], check=True)
 
     @classmethod
-    def AngleAxis(cls, theta: float, v: ArrayLike3, *, unit: str = "rad") -> Self:
+    def AngleAxis(cls, theta: float, v: ArrayLike3, *, unit: str = "rad") -> SO3:
         r"""
         Construct a new SO(3) rotation matrix from rotation angle and axis
 
@@ -750,7 +722,7 @@ class SO3(BasePoseMatrix):
         return cls(smb.angvec2r(theta, v, unit=unit), check=False)
 
     @classmethod
-    def AngVec(cls, theta, v, *, unit="rad") -> Self:
+    def AngVec(cls, theta: float, v: ArrayLike3, *, unit: str = "rad") -> SO3:
         r"""
         Construct a new SO(3) rotation matrix from rotation angle and axis
 
@@ -774,7 +746,7 @@ class SO3(BasePoseMatrix):
         return cls(smb.angvec2r(theta, v, unit=unit), check=False)
 
     @classmethod
-    def EulerVec(cls, w) -> Self:
+    def EulerVec(cls, w: ArrayLike3) -> SO3:
         r"""
         Construct a new SO(3) rotation matrix from an Euler rotation vector
 
@@ -807,10 +779,10 @@ class SO3(BasePoseMatrix):
     @classmethod
     def Exp(
         cls,
-        S: Union[R3, RNx3],
+        S: R3 | RNx3,
         check: bool = True,
         so3: bool = True,
-    ) -> Self:
+    ) -> SO3:
         r"""
         Create an SO(3) rotation matrix from so(3)
 
@@ -864,7 +836,7 @@ class SO3(BasePoseMatrix):
 
         return UnitQuaternion(smb.r2q(self.R), check=False)
 
-    def angdist(self, other: SO3, metric: int = 6) -> Union[float, ndarray]:
+    def angdist(self, other: SO3, metric: int = 6) -> float | NDArray:
         r"""
         Angular distance metric between rotations
 
@@ -952,11 +924,11 @@ class SE3(SO3):
         ...
 
     @overload
-    def __init__(self, x: Union[SE3, SO3, SE2], *, check=True):  # copy/promote
+    def __init__(self, x: SE3 | SO3 | SE2, *, check=True):  # copy/promote
         ...
 
     @overload
-    def __init__(self, x: List[SE3], *, check=True):  # import list of SE3
+    def __init__(self, x: list[SE3], *, check=True):  # import list of SE3
         ...
 
     @overload
@@ -972,7 +944,7 @@ class SE3(SO3):
         ...
 
     @overload
-    def __init__(self, x: List[SE3Array], *, check=True):  # import native arrays
+    def __init__(self, x: list[SE3Array], *, check=True):  # import native arrays
         ...
 
     def __init__(self, x=None, y=None, z=None, *, check=True):
@@ -1034,7 +1006,7 @@ class SE3(SO3):
 
     # ------------------------------------------------------------------------ #
     @property
-    def shape(self) -> Tuple[int, int]:
+    def shape(self) -> tuple[int, int]:
         """
         Shape of the object's internal matrix representation
 
@@ -1254,7 +1226,7 @@ class SE3(SO3):
         else:
             return SE2([e.yaw_SE2() for e in self])
 
-    def delta(self, X2: Optional[SE3] = None) -> R6:
+    def delta(self, X2: SE3 | None = None) -> R6:
         r"""
         Infinitesimal difference of SE(3) values
 
@@ -1387,7 +1359,7 @@ class SE3(SO3):
         cls,
         theta: ArrayLike,
         unit: str = "rad",
-        t: Optional[ArrayLike3] = None,
+        t: ArrayLike3 | None = None,
     ) -> SE3:
         """
         Create anSE(3) pure rotation about the X-axis
@@ -1431,7 +1403,7 @@ class SE3(SO3):
         cls,
         theta: ArrayLike,
         unit: str = "rad",
-        t: Optional[ArrayLike3] = None,
+        t: ArrayLike3 | None = None,
     ) -> SE3:
         """
         Create an SE(3) pure rotation about the Y-axis
@@ -1475,7 +1447,7 @@ class SE3(SO3):
         cls,
         theta: ArrayLike,
         unit: str = "rad",
-        t: Optional[ArrayLike3] = None,
+        t: ArrayLike3 | None = None,
     ) -> SE3:
         """
         Create an SE(3) pure rotation about the Z-axis
@@ -1518,10 +1490,10 @@ class SE3(SO3):
     def Rand(
         cls,
         N: int = 1,
-        xrange: Optional[ArrayLike2] = (-1, 1),
-        yrange: Optional[ArrayLike2] = (-1, 1),
-        zrange: Optional[ArrayLike2] = (-1, 1),
-        theta_range: Optional[ArrayLike2] = None,
+        xrange: ArrayLike2 | None = (-1, 1),
+        yrange: ArrayLike2 | None = (-1, 1),
+        zrange: ArrayLike2 | None = (-1, 1),
+        theta_range: ArrayLike2 | None = None,
         unit: str = "rad",
     ) -> SE3:  # pylint: disable=arguments-differ
         """
@@ -1723,7 +1695,7 @@ class SE3(SO3):
 
     @classmethod
     def AngleAxis(
-        cls, theta: float, v: ArrayLike3, *, unit: Optional[unit] = "rad"
+        cls, theta: float, v: ArrayLike3, *, unit: str = "rad"
     ) -> SE3:
         r"""
         Create an SE(3) pure rotation matrix from rotation angle and axis
@@ -1808,7 +1780,7 @@ class SE3(SO3):
         return cls(smb.angvec2tr(theta, w), check=False)
 
     @classmethod
-    def Exp(cls, S: Union[R6, R4x4], check: bool = True) -> SE3:
+    def Exp(cls, S: R6 | R4x4, check: bool = True) -> SE3:
         """
         Create an SE(3) matrix from se(3)
 
@@ -1965,8 +1937,8 @@ class SE3(SO3):
     @classmethod
     def Rt(
         cls,
-        R: Union[SO3, SO3Array],
-        t: Optional[ArrayLike3] = None,
+        R: SO3 | SO3Array,
+        t: ArrayLike3 | None = None,
         check: bool = True,
     ) -> SE3:
         """

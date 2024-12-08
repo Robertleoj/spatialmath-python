@@ -248,8 +248,9 @@ class BaseTwist(BasePoseList):
 
         :seealso: :func:`__ne__`
         """
-        if type(left) != type(right):
+        if type(left) is not type(right):
             raise TypeError("operands to == are of different types")
+
         return left.binop(right, lambda x, y: all(x == y), list1=False)
 
     def __ne__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
@@ -273,7 +274,7 @@ class BaseTwist(BasePoseList):
 
         :seealso: :func:`__ne__`
         """
-        if type(left) != type(right):
+        if type(left) is not type(right):
             raise TypeError("operands to != are of different types")
         return left.binop(right, lambda x, y: not all(x == y), list1=False)
 

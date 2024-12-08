@@ -22,7 +22,7 @@ from typing import Any
 import spatialmath.base as smb
 from spatialmath.pose3d import SO3, SE3
 from spatialmath.baseposelist import BasePoseList
-from spatialmath.base.types import *
+from spatialmath.base.types import ArrayLike3, ArrayLike4, R3, R4, R4x4, ArrayLike, SO3Array, ArrayLike2, RNx3
 
 _eps = np.finfo(np.float64).eps
 
@@ -42,7 +42,7 @@ class Quaternion(BasePoseList):
        :parts: 1
     """
 
-    def __init__(self, s: Any = None, v=None, check: Optional[bool] = True):
+    def __init__(self, s: Any = None, v=None) -> None:
         r"""
         Construct a new quaternion
 
@@ -122,7 +122,7 @@ class Quaternion(BasePoseList):
         return np.zeros((4,))
 
     @property
-    def shape(self) -> Tuple[int]:
+    def shape(self) -> tuple[int]:
         """
         Shape of the object's interal matrix representation
 
@@ -935,8 +935,8 @@ class UnitQuaternion(Quaternion):
         self,
         s: Any = None,
         v=None,
-        norm: Optional[bool] = True,
-        check: Optional[bool] = True,
+        norm: bool = True,
+        check: bool = True,
     ):
         """
         Construct a UnitQuaternion instance
@@ -1047,7 +1047,7 @@ class UnitQuaternion(Quaternion):
         return smb.qeye()
 
     @staticmethod
-    def isvalid(x: ArrayLike, check: Optional[bool] = True) -> bool:
+    def isvalid(x: ArrayLike, check: bool = True) -> bool:
         """
         Test if vector is valid unit quaternion
 
@@ -1134,7 +1134,7 @@ class UnitQuaternion(Quaternion):
 
     # -------------------------------------------- constructor variants
     @classmethod
-    def Rx(cls, angles: ArrayLike, unit: Optional[str] = "rad") -> UnitQuaternion:
+    def Rx(cls, angles: ArrayLike, unit: str = "rad") -> UnitQuaternion:
         """
         Construct a UnitQuaternion object representing rotation about the X-axis
 
@@ -1164,7 +1164,7 @@ class UnitQuaternion(Quaternion):
         )
 
     @classmethod
-    def Ry(cls, angles: ArrayLike, unit: Optional[str] = "rad") -> UnitQuaternion:
+    def Ry(cls, angles: ArrayLike, unit: str = "rad") -> UnitQuaternion:
         """
         Construct a UnitQuaternion object representing rotation about the Y-axis
 
@@ -1194,7 +1194,7 @@ class UnitQuaternion(Quaternion):
         )
 
     @classmethod
-    def Rz(cls, angles: ArrayLike, unit: Optional[str] = "rad") -> UnitQuaternion:
+    def Rz(cls, angles: ArrayLike, unit: str = "rad") -> UnitQuaternion:
         """
         Construct a UnitQuaternion object representing rotation about the Z-axis
 
@@ -1225,7 +1225,7 @@ class UnitQuaternion(Quaternion):
 
     @classmethod
     def Rand(
-        cls, N: int = 1, *, theta_range: Optional[ArrayLike2] = None, unit: str = "rad"
+        cls, N: int = 1, *, theta_range: ArrayLike2 | None = None, unit: str = "rad"
     ) -> UnitQuaternion:
         """
         Construct a new random unit quaternion
@@ -1259,7 +1259,7 @@ class UnitQuaternion(Quaternion):
         )
 
     @classmethod
-    def Eul(cls, *angles: List[float], unit: Optional[str] = "rad") -> UnitQuaternion:
+    def Eul(cls, *angles: list[float], unit: str = "rad") -> UnitQuaternion:
         r"""
         Construct a new unit quaternion from Euler angles
 
@@ -1295,9 +1295,9 @@ class UnitQuaternion(Quaternion):
     @classmethod
     def RPY(
         cls,
-        *angles: List[float],
-        order: Optional[str] = "zyx",
-        unit: Optional[str] = "rad",
+        *angles: list[float],
+        order: str = "zyx",
+        unit: str = "rad",
     ) -> UnitQuaternion:
         r"""
         Construct a new unit quaternion from roll-pitch-yaw angles
@@ -1384,7 +1384,7 @@ class UnitQuaternion(Quaternion):
 
     @classmethod
     def AngVec(
-        cls, theta: float, v: ArrayLike3, *, unit: Optional[str] = "rad"
+        cls, theta: float, v: ArrayLike3, *, unit: str = "rad"
     ) -> UnitQuaternion:
         r"""
         Construct a new unit quaternion from rotation angle and axis
@@ -1843,7 +1843,7 @@ class UnitQuaternion(Quaternion):
         )
 
     def interp(
-        self, end: UnitQuaternion, s: float = 0, shortest: Optional[bool] = False
+        self, end: UnitQuaternion, s: float = 0, shortest: bool = False
     ) -> UnitQuaternion:
         """
         Interpolate between two unit quaternions
@@ -1923,7 +1923,7 @@ class UnitQuaternion(Quaternion):
 
         return UnitQuaternion(qi)
 
-    def interp1(self, s: float = 0, shortest: Optional[bool] = False) -> UnitQuaternion:
+    def interp1(self, s: float = 0, shortest: bool = False) -> UnitQuaternion:
         """
         Interpolate a unit quaternion
 
@@ -1995,7 +1995,7 @@ class UnitQuaternion(Quaternion):
 
         return UnitQuaternion(qi)
 
-    def increment(self, w: ArrayLike3, normalize: Optional[bool] = False) -> None:
+    def increment(self, w: ArrayLike3, normalize: bool = False) -> None:
         """
         Quaternion incremental update
 
@@ -2022,7 +2022,7 @@ class UnitQuaternion(Quaternion):
             updated = smb.qunit(updated)
         self.data = [updated]
 
-    def plot(self, *args: List, **kwargs):
+    def plot(self, *args: list, **kwargs):
         """
         Plot unit quaternion as a coordinate frame
 
@@ -2040,7 +2040,7 @@ class UnitQuaternion(Quaternion):
         """
         smb.trplot(smb.q2r(self._A), *args, **kwargs)
 
-    def animate(self, *args: List, **kwargs):
+    def animate(self, *args: list, **kwargs):
         """
         Plot unit quaternion as an animated coordinate frame
 
@@ -2069,8 +2069,8 @@ class UnitQuaternion(Quaternion):
             return smb.tranimate(smb.q2r(self._A), *args, **kwargs)
 
     def rpy(
-        self, unit: Optional[str] = "rad", order: Optional[str] = "zyx"
-    ) -> Union[R3, RNx3]:
+        self, unit: str = "rad", order: str = "zyx"
+    ) -> R3 | RNx3:
         """
         Unit quaternion as roll-pitch-yaw angles
 
@@ -2115,7 +2115,7 @@ class UnitQuaternion(Quaternion):
         else:
             return np.array([smb.tr2rpy(q.R, unit=unit, order=order) for q in self])
 
-    def eul(self, unit: Optional[str] = "rad") -> Union[R3, RNx3]:
+    def eul(self, unit: str = "rad") -> R3 | RNx3:
         r"""
         Unit quaternion as Euler angles
 
@@ -2151,7 +2151,7 @@ class UnitQuaternion(Quaternion):
         else:
             return np.array([smb.tr2eul(q.R, unit=unit) for q in self])
 
-    def angvec(self, unit: Optional[str] = "rad") -> Tuple[float, R3]:
+    def angvec(self, unit: str = "rad") -> tuple[float, R3]:
         r"""
         Unit quaternion as angle and rotation vector
 
@@ -2177,33 +2177,7 @@ class UnitQuaternion(Quaternion):
         """
         return smb.tr2angvec(self.R, unit=unit)
 
-    # def log(self):
-    #     r"""
-    #     Logarithm of unit quaternion
-
-    #     :rtype: Quaternion instance
-
-    #     ``q.log()`` is the logarithm of the unit quaternion ``q``, ie.
-
-    #     .. math::
-
-    #          0  \langle \frac{\mathb{v}}{\| \mathbf{v} \|} \acos s \rangle
-
-    #     Example:
-
-    #     .. runblock:: pycon
-
-    #         >>> from spatialmath import UnitQuaternion
-    #         >>> q = UnitQuaternion.Rx(0.3)
-    #         >>> print(q.log())
-
-    #     :reference: `Wikipedia <https://en.wikipedia.org/wiki/Quaternion#Exponential,_logarithm,_and_power_functions>`_
-
-    #     :seealso: :meth:`Quaternion.Quaternion.log`, `~spatialmath.quaternion.Quaternion.exp`
-    #     """
-    #     return Quaternion(s=0, v=math.acos(self.s) * smb.unitvec(self.v))
-
-    def angdist(self, other: UnitQuaternion, metric: Optional[int] = 3) -> float:
+    def angdist(self, other: UnitQuaternion, metric: int = 3) -> float:
         r"""
         Angular distance metric between unit quaternions
 

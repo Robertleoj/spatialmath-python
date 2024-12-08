@@ -1,17 +1,6 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Apr 10 14:19:04 2020
-
-@author: corkep
-
-"""
-
 import numpy as np
 import unittest
-
-
-from spatialmath.base.numeric import *
+from spatialmath.base.numeric import array2str, bresenham, mpq_point, gauss1d, gauss2d
 
 
 class TestNumeric(unittest.TestCase):

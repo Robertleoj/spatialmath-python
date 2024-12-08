@@ -71,7 +71,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.ruff]
 line-length = 88
 target-version = "py38"
-exclude = ["camera_derivatives.py"]
+exclude = ["camera_derivatives.py", "**/*.ipynb"]
 
 [tool.ruff.lint]
 ignore = ["E741", "E731"]

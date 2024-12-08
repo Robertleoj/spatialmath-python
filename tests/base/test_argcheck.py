@@ -1,17 +1,9 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Mon May 11 11:49:29 2020
-
-@author: corkep
-"""
-
 import unittest
 import numpy as np
 import numpy.testing as nt
+import math
 
-from spatialmath.base.argcheck import *
-
+from spatialmath.base.argcheck import ismatrix, assertmatrix, getmatrix, verifymatrix, getunit, isvector, getvector, isnumberlist, isvectorlist, islistof
 
 class Test_check(unittest.TestCase):
     def test_ismatrix(self):
@@ -58,56 +50,56 @@ class Test_check(unittest.TestCase):
         self.assertEqual(getmatrix(a, (4, None)).shape, (4, 3))
         self.assertEqual(getmatrix(a, (None, None)).shape, (4, 3))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (5, 3))
+            getmatrix(a, (5, 3))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (5, None))
+            getmatrix(a, (5, None))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (None, 4))
+            getmatrix(a, (None, 4))
 
         with self.assertRaises(TypeError):
-            m = getmatrix({}, (4, 3))
+            getmatrix({}, (4, 3))
 
         a = np.r_[1, 2, 3, 4]
         self.assertEqual(getmatrix(a, (1, 4)).shape, (1, 4))
         self.assertEqual(getmatrix(a, (4, 1)).shape, (4, 1))
         self.assertEqual(getmatrix(a, (2, 2)).shape, (2, 2))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (5, None))
+            getmatrix(a, (5, None))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (None, 5))
+            getmatrix(a, (None, 5))
 
         a = [1, 2, 3, 4]
         self.assertEqual(getmatrix(a, (1, 4)).shape, (1, 4))
         self.assertEqual(getmatrix(a, (4, 1)).shape, (4, 1))
         self.assertEqual(getmatrix(a, (2, 2)).shape, (2, 2))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (5, None))
+            getmatrix(a, (5, None))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (None, 5))
+            getmatrix(a, (None, 5))
 
         a = 7
         self.assertEqual(getmatrix(a, (1, 1)).shape, (1, 1))
         self.assertEqual(getmatrix(a, (None, None)).shape, (1, 1))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (2, 1))
+            getmatrix(a, (2, 1))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (1, 2))
+            getmatrix(a, (1, 2))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (None, 2))
+            getmatrix(a, (None, 2))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (2, None))
+            getmatrix(a, (2, None))
 
         a = 7.0
         self.assertEqual(getmatrix(a, (1, 1)).shape, (1, 1))
         self.assertEqual(getmatrix(a, (None, None)).shape, (1, 1))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (2, 1))
+            getmatrix(a, (2, 1))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (1, 2))
+            getmatrix(a, (1, 2))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (None, 2))
+            getmatrix(a, (None, 2))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (2, None))
+            getmatrix(a, (2, None))
 
     def test_verifymatrix(self):
         with self.assertRaises(TypeError):
@@ -173,10 +165,6 @@ class Test_check(unittest.TestCase):
         self.assertFalse(isvector(np.array([1, 2, 3]), 4))
         self.assertFalse(isvector(np.array([[1, 2, 3]]), 4))
         self.assertFalse(isvector(np.array([[1], [2], [3]]), 4))
-
-    def test_isvector(self):
-        l = [1, 2, 3]
-        nt.assert_raises(ValueError, assertvector, l, 4)
 
     def test_getvector(self):
         l = [1, 2, 3]

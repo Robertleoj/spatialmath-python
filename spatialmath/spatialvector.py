@@ -224,7 +224,7 @@ class SpatialVector(BasePoseList):
         """
 
         # TODO broadcasting with binop
-        if type(left) != type(right):
+        if type(left) is not type(right):
             raise TypeError("can only add spatial vectors of same type")
         if len(left) != len(right):
             raise ValueError("can only add equal length arrays of spatial vectors")
@@ -249,7 +249,7 @@ class SpatialVector(BasePoseList):
 
         :seealso: :func:`__add__`, :func:`__neg__`
         """
-        if type(left) != type(right):
+        if type(left) is not type(right):
             raise TypeError("can only add spatial vectors of same type")
         if len(left) != len(right):
             raise ValueError("can only add equal length arrays of spatial vectors")

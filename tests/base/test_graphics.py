@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pytest
 import sys
-from spatialmath.base import *
+from spatialmath.base import plotvol2, plotvol3, plot_point, plot_text, plot_box, plot_circle, plot_ellipse, plot_homline, plot_cuboid, plot_sphere, plot_ellipsoid, plot_cylinder, plot_cone
 
 # test graphics primitives
 # TODO check they actually create artists
