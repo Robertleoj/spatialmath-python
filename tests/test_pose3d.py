@@ -242,8 +242,8 @@ class TestSO3(unittest.TestCase):
         nt.assert_almost_equal(R.R[:, 0], v3 / np.linalg.norm(v3), 5)
 
     def test_conversion(self):
-        R = SO3.AngleAxis(0.7, [1,2,3])
-        q = UnitQuaternion([11,7,3,-6])
+        R = SO3.AngleAxis(0.7, [1, 2, 3])
+        q = UnitQuaternion([11, 7, 3, -6])
 
         R_from_q = SO3(q.R)
         q_from_R = UnitQuaternion(R)
@@ -253,7 +253,6 @@ class TestSO3(unittest.TestCase):
 
         nt.assert_array_almost_equal(q.SO3(), R_from_q)
         nt.assert_array_almost_equal(q.SO3().UnitQuaternion(), q)
-
 
     def test_shape(self):
         a = SO3()
@@ -830,7 +829,7 @@ class TestSE3(unittest.TestCase):
         nt.assert_equal(len(R), 1)
         self.assertIsInstance(R, SE3)
 
-        # random 
+        # random
         T = SE3.Rand()
         R = T.R
         t = T.t

@@ -655,7 +655,7 @@ class Twist3(BaseTwist):
           scalars.
 
         Foo bar!
-        
+
         Example:
 
         .. runblock:: pycon
@@ -752,9 +752,7 @@ class Twist3(BaseTwist):
         return cls([np.r_[0, 0, _z, 0, 0, 0] for _z in smb.getvector(z)], check=False)
 
     @classmethod
-    def Rand(
-        cls, *, xrange=(-1, 1), yrange=(-1, 1), zrange=(-1, 1), N=1
-    ):  # pylint: disable=arguments-differ
+    def Rand(cls, *, xrange=(-1, 1), yrange=(-1, 1), zrange=(-1, 1), N=1):  # pylint: disable=arguments-differ
         """
         Create a new random 3D twist
 

@@ -5,13 +5,12 @@
 
 """
 Utility functions for testing and converting passed arguments.  Used in all
-spatialmath functions and classes to provides for flexibility in argument types 
+spatialmath functions and classes to provides for flexibility in argument types
 that can be passed.
 """
 
 # pylint: disable=invalid-name
 
-import math
 import numpy as np
 from collections.abc import Iterable
 
@@ -283,8 +282,7 @@ def getvector(
     dim: Optional[Union[int, None]] = None,
     out: str = "array",
     dtype: DTypeLike = np.float64,
-) -> NDArray:
-    ...
+) -> NDArray: ...
 
 
 @overload
@@ -293,8 +291,7 @@ def getvector(
     dim: Optional[Union[int, None]] = None,
     out: str = "list",
     dtype: DTypeLike = np.float64,
-) -> List[float]:
-    ...
+) -> List[float]: ...
 
 
 @overload
@@ -303,8 +300,7 @@ def getvector(
     dim: Optional[Union[int, None]] = None,
     out: str = "sequence",
     dtype: DTypeLike = np.float64,
-) -> Tuple[float, ...]:
-    ...
+) -> Tuple[float, ...]: ...
 
 
 @overload
@@ -313,8 +309,7 @@ def getvector(
     dim: Optional[Union[int, None]] = None,
     out: str = "sequence",
     dtype: DTypeLike = np.float64,
-) -> List[float]:
-    ...
+) -> List[float]: ...
 
 
 def getvector(

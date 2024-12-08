@@ -620,13 +620,11 @@ def wrap_mpi_pi(theta: ArrayLike) -> Union[float, NDArray]:
 
 
 @overload
-def angdiff(a: ArrayLike, b: ArrayLike) -> NDArray:
-    ...
+def angdiff(a: ArrayLike, b: ArrayLike) -> NDArray: ...
 
 
 @overload
-def angdiff(a: ArrayLike) -> NDArray:
-    ...
+def angdiff(a: ArrayLike) -> NDArray: ...
 
 
 def angdiff(a, b=None):

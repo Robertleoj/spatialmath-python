@@ -5,6 +5,7 @@ Created on Sun Jul  5 09:42:30 2020
 
 @author: corkep
 """
+
 from __future__ import annotations
 
 from functools import reduce
@@ -27,7 +28,6 @@ from spatialmath.base.types import (
     NDArray,
     Union,
     List,
-    Tuple,
     R2,
     R3,
     R4,

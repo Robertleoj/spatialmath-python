@@ -1,27 +1,17 @@
-[project]
+[tool.poetry]
 name = "spatialmath-python"
+package-mode = true
 version = "1.1.13"
-authors = [
-  { name="Peter Corke", email="rvc@petercorke.com" },
-]
 description = "Provides spatial maths capability for Python."
+authors = ["Peter Corke <rvc@petercorke.com>"]
 readme = "README.md"
-requires-python = ">=3.7"
-classifiers = [
-    "Development Status :: 5 - Production/Stable",
-    # Indicate who your project is intended for
-    "Intended Audience :: Developers",
-    # Specify the Python versions you support here.
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+packages = [
+    { include = "spatialmath" },
+    # { include = "spatialmath.base" },
 ]
+homepage = "https://github.com/bdaiinstitute/spatialmath-python"
+repository = "https://github.com/bdaiinstitute/spatialmath-python"
+documentation = "https://bdaiinstitute.github.io/spatialmath-python/"
 keywords = [
     "spatial-math", "spatial math",
     "SO2", "SE2", "SO3", "SE3",
@@ -34,55 +24,56 @@ keywords = [
     "quaternion", "unit-quaternion",
     "robotics", "robot vision", "computer vision",
 ]
-
-dependencies = [
-    "numpy>=1.22,<2", # Cannot use 2.0 due to matplotlib version pinning.
-    "scipy",
-    "matplotlib==3.5.1", # Large user-base has apt-installed python3-matplotlib (ROS2) which is pinned to this version.
-    "ansitable",
-    "typing_extensions",
-    "pre-commit",
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
 ]
 
-[project.urls]
-"Homepage" = "https://github.com/bdaiinstitute/spatialmath-python"
-"Bug Tracker" = "https://github.com/bdaiinstitute/spatialmath-python/issues"
-"Documentation" = "https://bdaiinstitute.github.io/spatialmath-python/"
-"Source" = "https://github.com/bdaiinstitute/spatialmath-python"
+[tool.poetry.dependencies]
+python = ">=3.10"
+numpy = ">=2.1.0"
+scipy = "*"
+matplotlib = ">=3.9.3"
+ansitable = "*"
+typing_extensions = "*"
+pre-commit = "*"
 
-[project.optional-dependencies]
+[tool.poetry.group.dev.dependencies]
+sympy = "*"
+pytest = "*"
+pytest-timeout = "*"
+pytest-xvfb = "*"
+coverage = "*"
+build = "*"
+ruff = "*"
 
-dev = [
-    "sympy",
-    "pytest",
-    "pytest-timeout",
-    "pytest-xvfb",
-    "coverage",
-    "flake8"
-]
-
-docs = [
-    "sphinx",
-    "sphinx-rtd-theme", 
-    "sphinx-autorun", 
-    "sphinxcontrib-jsmath", 
-    "sphinx-favicon",
-    "sphinx-autodoc-typehints",
-]
+[tool.poetry.group.docs.dependencies]
+sphinx = "*"
+sphinx-rtd-theme = "*"
+sphinx-autorun = "*"
+sphinxcontrib-jsmath = "*"
+sphinx-favicon = "*"
+sphinx-autodoc-typehints = "*"
 
 [build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
 
-requires = ["setuptools", "oldest-supported-numpy"]
-build-backend = "setuptools.build_meta"
-
-[tool.setuptools]
-
-packages = [
-    "spatialmath",
-    "spatialmath.base",
-]
-
-[tool.black]
+[tool.ruff]
 line-length = 88
-target-version = ['py38']
-exclude = "camera_derivatives.py"
+target-version = "py38"
+exclude = ["camera_derivatives.py"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"

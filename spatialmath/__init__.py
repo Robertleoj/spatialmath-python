@@ -46,7 +46,7 @@ __all__ = [
     "Ellipse",
     "BSplineSE3",
     "InterpSplineSE3",
-    "SplineFit"
+    "SplineFit",
 ]
 
 try:

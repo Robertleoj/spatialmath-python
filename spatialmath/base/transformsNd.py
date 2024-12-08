@@ -11,11 +11,9 @@ tuple, numpy array, numpy row vector or numpy column vector.
 """
 # pylint: disable=invalid-name
 
-import math
 import numpy as np
 from spatialmath.base.types import *
 from spatialmath.base.argcheck import getvector, isvector
-from spatialmath.base.vectors import iszerovec, unitvec_norm
 
 # from spatialmath.base.symbolic import issymbol
 # from spatialmath.base.transforms3d import transl
@@ -36,13 +34,11 @@ _eps = np.finfo(np.float64).eps
 
 # ---------------------------------------------------------------------------------------#
 @overload
-def r2t(R: SO2Array, check: bool = False) -> SE2Array:
-    ...
+def r2t(R: SO2Array, check: bool = False) -> SE2Array: ...
 
 
 @overload
-def r2t(R: SO3Array, check: bool = False) -> SE3Array:
-    ...
+def r2t(R: SO3Array, check: bool = False) -> SE3Array: ...
 
 
 def r2t(R, check=False):
@@ -102,13 +98,11 @@ def r2t(R, check=False):
 
 # ---------------------------------------------------------------------------------------#
 @overload
-def t2r(T: SE2Array, check: bool = False) -> SO2Array:
-    ...
+def t2r(T: SE2Array, check: bool = False) -> SO2Array: ...
 
 
 @overload
-def t2r(T: SE3Array, check: bool = False) -> SO3Array:
-    ...
+def t2r(T: SE3Array, check: bool = False) -> SO3Array: ...
 
 
 def t2r(T: SEnArray, check: bool = False) -> SOnArray:
@@ -167,13 +161,11 @@ b = t2r(np.eye(3))
 
 
 @overload
-def tr2rt(T: SE2Array, check=False) -> Tuple[SO2Array, R2]:
-    ...
+def tr2rt(T: SE2Array, check=False) -> Tuple[SO2Array, R2]: ...
 
 
 @overload
-def tr2rt(T: SE3Array, check=False) -> Tuple[SO3Array, R3]:
-    ...
+def tr2rt(T: SE3Array, check=False) -> Tuple[SO3Array, R3]: ...
 
 
 def tr2rt(T: SEnArray, check=False) -> Tuple[SOnArray, Rn]:
@@ -227,13 +219,11 @@ def tr2rt(T: SEnArray, check=False) -> Tuple[SOnArray, Rn]:
 
 
 @overload
-def rt2tr(R: SO2Array, t: ArrayLike2, check=False) -> SE2Array:
-    ...
+def rt2tr(R: SO2Array, t: ArrayLike2, check=False) -> SE2Array: ...
 
 
 @overload
-def rt2tr(R: SO3Array, t: ArrayLike3, check=False) -> SE3Array:
-    ...
+def rt2tr(R: SO3Array, t: ArrayLike3, check=False) -> SE3Array: ...
 
 
 def rt2tr(R, t, check=False):
@@ -472,13 +462,11 @@ def iseye(S: NDArray, tol: float = 20) -> bool:
 
 # ---------------------------------------------------------------------------------------#
 @overload
-def skew(v: float) -> se2Array:
-    ...
+def skew(v: float) -> se2Array: ...
 
 
 @overload
-def skew(v: ArrayLike3) -> se3Array:
-    ...
+def skew(v: ArrayLike3) -> se3Array: ...
 
 
 def skew(v):
@@ -532,13 +520,11 @@ def skew(v):
 
 # ---------------------------------------------------------------------------------------#
 @overload
-def vex(s: so2Array, check: bool = False) -> R1:
-    ...
+def vex(s: so2Array, check: bool = False) -> R1: ...
 
 
 @overload
-def vex(s: so3Array, check: bool = False) -> R3:
-    ...
+def vex(s: so3Array, check: bool = False) -> R3: ...
 
 
 def vex(s, check=False):
@@ -591,13 +577,11 @@ def vex(s, check=False):
 
 # ---------------------------------------------------------------------------------------#
 @overload
-def skewa(v: ArrayLike3) -> se2Array:
-    ...
+def skewa(v: ArrayLike3) -> se2Array: ...
 
 
 @overload
-def skewa(v: ArrayLike6) -> se3Array:
-    ...
+def skewa(v: ArrayLike6) -> se3Array: ...
 
 
 def skewa(v: Union[ArrayLike3, ArrayLike6]) -> Union[se2Array, se3Array]:
@@ -647,13 +631,11 @@ def skewa(v: Union[ArrayLike3, ArrayLike6]) -> Union[se2Array, se3Array]:
 
 
 @overload
-def vexa(Omega: se2Array, check: bool = False) -> R3:
-    ...
+def vexa(Omega: se2Array, check: bool = False) -> R3: ...
 
 
 @overload
-def vexa(Omega: se3Array, check: bool = False) -> R6:
-    ...
+def vexa(Omega: se3Array, check: bool = False) -> R6: ...
 
 
 def vexa(Omega: senArray, check: bool = False) -> Union[R3, R6]:

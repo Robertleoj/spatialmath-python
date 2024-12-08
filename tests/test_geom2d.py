@@ -13,7 +13,6 @@ import unittest
 import pytest
 import sys
 import numpy.testing as nt
-import spatialmath.base as smb
 
 
 class Polygon2Test(unittest.TestCase):

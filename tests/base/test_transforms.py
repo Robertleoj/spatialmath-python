@@ -7,18 +7,13 @@ Created on Fri Apr 10 14:19:04 2020
 
 """
 
-
 import numpy as np
 import numpy.testing as nt
 import unittest
 from math import pi
-import math
 from scipy.linalg import logm, expm
 
 from spatialmath.base import *
-from spatialmath.base import sym
-
-import matplotlib.pyplot as plt
 
 
 class TestLie(unittest.TestCase):
@@ -49,7 +44,6 @@ class TestLie(unittest.TestCase):
         )  # check contents, vex already verified
 
     def test_vexa(self):
-
         S = np.array([[0, -3, 1], [3, 0, 2], [0, 0, 0]])
         nt.assert_array_almost_equal(vexa(S), np.array([1, 2, 3]))
 
@@ -80,7 +74,6 @@ class TestLie(unittest.TestCase):
         )  # check contents, vexa already verified
 
     def test_trlog(self):
-
         # %%% SO(3) tests
         # zero rotation case
         nt.assert_array_almost_equal(trlog(np.eye(3)), skew([0, 0, 0]))
@@ -189,7 +182,6 @@ class TestLie(unittest.TestCase):
     # TODO
 
     def test_trexp(self):
-
         # %% SO(3) tests
 
         # % so(3)
@@ -271,7 +263,6 @@ class TestLie(unittest.TestCase):
         nt.assert_array_almost_equal(trexp(trlog(T)), T)
 
     def test_trexp2(self):
-
         # % so(2)
 
         # zero rotation case
@@ -323,5 +314,4 @@ class TestLie(unittest.TestCase):
 
 # ---------------------------------------------------------------------------------------#
 if __name__ == "__main__":
-
     unittest.main()

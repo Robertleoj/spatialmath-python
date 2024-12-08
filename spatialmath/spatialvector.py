@@ -10,7 +10,7 @@ A set of cooperating classes to support Featherstone's spatial vector formalism
    :top-classes: collections.UserList
    :parts: 1
 
-.. note:: Compared to Featherstone's papers these spatial vectors have the 
+.. note:: Compared to Featherstone's papers these spatial vectors have the
     translational components first, followed by rotational components.
 """
 
@@ -494,7 +494,6 @@ class SpatialForce(SpatialF6):
 
 
 class SpatialMomentum(SpatialF6):
-
     """
     Spatial momentum class
 
@@ -682,7 +681,6 @@ class SpatialInertia(BasePoseList):
 
 
 if __name__ == "__main__":
-    import numpy.testing as nt
     import pathlib
 
     v = SpatialVelocity()

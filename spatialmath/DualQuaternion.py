@@ -140,9 +140,7 @@ class DualQuaternion:
         """
         return DualQuaternion(self.real.conj(), self.dual.conj())
 
-    def __add__(
-        left, right: DualQuaternion
-    ) -> Self:  # pylint: disable=no-self-argument
+    def __add__(left, right: DualQuaternion) -> Self:  # pylint: disable=no-self-argument
         """
         Sum of two dual quaternions
 
@@ -159,9 +157,7 @@ class DualQuaternion:
         """
         return DualQuaternion(left.real + right.real, left.dual + right.dual)
 
-    def __sub__(
-        left, right: DualQuaternion
-    ) -> Self:  # pylint: disable=no-self-argument
+    def __sub__(left, right: DualQuaternion) -> Self:  # pylint: disable=no-self-argument
         """
         Difference of two dual quaternions
 
@@ -271,11 +267,9 @@ class UnitDualQuaternion(DualQuaternion):
     """
 
     @overload
-    def __init__(self, T: SE3):
-        ...
+    def __init__(self, T: SE3): ...
 
-    def __init__(self, real: Quaternion, dual: Quaternion):
-        ...
+    def __init__(self, real: Quaternion, dual: Quaternion): ...
 
     def __init__(self, real=None, dual=None):
         r"""
@@ -357,7 +351,6 @@ class UnitDualQuaternion(DualQuaternion):
 
 
 if __name__ == "__main__":  # pragma: no cover
-
     from spatialmath import SE3, UnitDualQuaternion
 
     print(UnitDualQuaternion(SE3()))

@@ -253,12 +253,10 @@ class Line3(BasePoseList):
     __array_ufunc__ = None  # allow pose matrices operators with NumPy values
 
     @overload
-    def __init__(self, v: ArrayLike3, w: ArrayLike3):
-        ...
+    def __init__(self, v: ArrayLike3, w: ArrayLike3): ...
 
     @overload
-    def __init__(self, v: ArrayLike6):
-        ...
+    def __init__(self, v: ArrayLike6): ...
 
     def __init__(self, v=None, w=None, check=True):
         """
@@ -649,7 +647,9 @@ class Line3(BasePoseList):
             raise ValueError("bad argument")
 
     def isequal(
-        l1, l2: Line3, tol: float = 20  # type: ignore
+        l1,
+        l2: Line3,
+        tol: float = 20,  # type: ignore
     ) -> bool:  # pylint: disable=no-self-argument
         """
         Test if two lines are equivalent
@@ -672,7 +672,9 @@ class Line3(BasePoseList):
         )
 
     def isparallel(
-        l1, l2: Line3, tol: float = 20  # type: ignore
+        l1,
+        l2: Line3,
+        tol: float = 20,  # type: ignore
     ) -> bool:  # pylint: disable=no-self-argument
         """
         Test if lines are parallel
@@ -693,7 +695,9 @@ class Line3(BasePoseList):
         return bool(np.linalg.norm(np.cross(l1.w, l2.w)) < tol * _eps)
 
     def isintersecting(
-        l1, l2: Line3, tol: float = 20  # type: ignore
+        l1,
+        l2: Line3,
+        tol: float = 20,  # type: ignore
     ) -> bool:  # pylint: disable=no-self-argument
         """
         Test if lines are intersecting
@@ -799,7 +803,8 @@ class Line3(BasePoseList):
     # ------------------------------------------------------------------------- #
 
     def intersects(
-        l1, l2: Line3  # type:ignore
+        l1,
+        l2: Line3,  # type:ignore
     ) -> Union[R3, None]:  # pylint: disable=no-self-argument
         """
         Intersection point of two lines
@@ -826,7 +831,9 @@ class Line3(BasePoseList):
             return None
 
     def distance(
-        l1, l2: Line3, tol: float = 20  # type:ignore
+        l1,
+        l2: Line3,
+        tol: float = 20,  # type:ignore
     ) -> float:  # pylint: disable=no-self-argument
         """
         Minimum distance between lines
@@ -860,7 +867,8 @@ class Line3(BasePoseList):
         return l
 
     def closest_to_line(
-        l1, l2: Line3  # type:ignore
+        l1,
+        l2: Line3,  # type:ignore
     ) -> Tuple[Points3, Rn]:  # pylint: disable=no-self-argument
         """
         Closest point between lines
@@ -987,9 +995,7 @@ class Line3(BasePoseList):
 
         return p, d
 
-    def commonperp(
-        l1, l2: Line3
-    ) -> Line3:  # type:ignore pylint: disable=no-self-argument
+    def commonperp(l1, l2: Line3) -> Line3:  # type:ignore pylint: disable=no-self-argument
         """
         Common perpendicular to two lines
 
@@ -1017,9 +1023,7 @@ class Line3(BasePoseList):
 
         return l1.__class__(v, w)
 
-    def __mul__(
-        left, right: Line3
-    ) -> float:  # type:ignore pylint: disable=no-self-argument
+    def __mul__(left, right: Line3) -> float:  # type:ignore pylint: disable=no-self-argument
         r"""
         Reciprocal product
 
@@ -1045,9 +1049,7 @@ class Line3(BasePoseList):
         else:
             raise ValueError("bad arguments")
 
-    def __rmul__(
-        right, left: SE3
-    ) -> Line3:  # type:ignore pylint: disable=no-self-argument
+    def __rmul__(right, left: SE3) -> Line3:  # type:ignore pylint: disable=no-self-argument
         """
         Rigid-body transformation of 3D line
 
@@ -1381,7 +1383,6 @@ class Plucker(Line3):
 
 if __name__ == "__main__":  # pragma: no cover
     import pathlib
-    import os.path
 
     # L = Line3.TwoPoints((1,2,0), (1,2,1))
     # print(L)

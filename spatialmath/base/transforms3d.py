@@ -40,7 +40,6 @@ from spatialmath.base.transformsNd import (
     isskew,
     isskewa,
     isR,
-    iseye,
     tr2rt,
     Ab2M,
 )
@@ -263,18 +262,15 @@ def trotz(theta: float, unit: str = "rad", t: Optional[ArrayLike3] = None) -> SE
 
 
 @overload  # pragma: no cover
-def transl(x: float, y: float, z: float) -> SE3Array:
-    ...
+def transl(x: float, y: float, z: float) -> SE3Array: ...
 
 
 @overload  # pragma: no cover
-def transl(x: ArrayLike3) -> SE3Array:
-    ...
+def transl(x: ArrayLike3) -> SE3Array: ...
 
 
 @overload  # pragma: no cover
-def transl(x: SE3Array) -> R3:
-    ...
+def transl(x: SE3Array) -> R3: ...
 
 
 def transl(x, y=None, z=None):
@@ -426,8 +422,7 @@ def isrot(R: Any, check: bool = False, tol: float = 20) -> bool:
 @overload  # pragma: no cover
 def rpy2r(
     roll: float, pitch: float, yaw: float, *, unit: str = "rad", order: str = "zyx"
-) -> SO3Array:
-    ...
+) -> SO3Array: ...
 
 
 @overload  # pragma: no cover
@@ -438,8 +433,7 @@ def rpy2r(
     *,
     unit: str = "rad",
     order: str = "zyx",
-) -> SO3Array:
-    ...
+) -> SO3Array: ...
 
 
 def rpy2r(
@@ -517,8 +511,7 @@ def rpy2r(
 @overload  # pragma: no cover
 def rpy2tr(
     roll: float, pitch: float, yaw: float, unit: str = "rad", order: str = "zyx"
-) -> SE3Array:
-    ...
+) -> SE3Array: ...
 
 
 @overload  # pragma: no cover
@@ -528,8 +521,7 @@ def rpy2tr(
     yaw: None = None,
     unit: str = "rad",
     order: str = "zyx",
-) -> SE3Array:
-    ...
+) -> SE3Array: ...
 
 
 def rpy2tr(
@@ -593,15 +585,13 @@ def rpy2tr(
 
 
 @overload  # pragma: no cover
-def eul2r(phi: float, theta: float, psi: float, unit: str = "rad") -> SO3Array:
-    ...
+def eul2r(phi: float, theta: float, psi: float, unit: str = "rad") -> SO3Array: ...
 
 
 @overload  # pragma: no cover
 def eul2r(
     phi: ArrayLike3, theta: None = None, psi: None = None, unit: str = "rad"
-) -> SO3Array:
-    ...
+) -> SO3Array: ...
 
 
 def eul2r(
@@ -654,13 +644,11 @@ def eul2r(
 
 # ---------------------------------------------------------------------------------------#
 @overload  # pragma: no cover
-def eul2tr(phi: float, theta: float, psi: float, unit: str = "rad") -> SE3Array:
-    ...
+def eul2tr(phi: float, theta: float, psi: float, unit: str = "rad") -> SE3Array: ...
 
 
 @overload  # pragma: no cover
-def eul2tr(phi: ArrayLike3, theta=None, psi=None, unit: str = "rad") -> SE3Array:
-    ...
+def eul2tr(phi: ArrayLike3, theta=None, psi=None, unit: str = "rad") -> SE3Array: ...
 
 
 def eul2tr(
@@ -1272,25 +1260,25 @@ def tr2rpy(
 @overload  # pragma: no cover
 def trlog(
     T: SO3Array, check: bool = True, twist: bool = False, tol: float = 20
-) -> so3Array:
-    ...
+) -> so3Array: ...
 
 
 @overload  # pragma: no cover
 def trlog(
     T: SE3Array, check: bool = True, twist: bool = False, tol: float = 20
-) -> se3Array:
-    ...
+) -> se3Array: ...
 
 
 @overload  # pragma: no cover
-def trlog(T: SO3Array, check: bool = True, twist: bool = True, tol: float = 20) -> R3:
-    ...
+def trlog(
+    T: SO3Array, check: bool = True, twist: bool = True, tol: float = 20
+) -> R3: ...
 
 
 @overload  # pragma: no cover
-def trlog(T: SE3Array, check: bool = True, twist: bool = True, tol: float = 20) -> R6:
-    ...
+def trlog(
+    T: SE3Array, check: bool = True, twist: bool = True, tol: float = 20
+) -> R6: ...
 
 
 def trlog(
@@ -1405,23 +1393,23 @@ def trlog(
 
 # ---------------------------------------------------------------------------------------#
 @overload  # pragma: no cover
-def trexp(S: so3Array, theta: Optional[float] = None, check: bool = True) -> SO3Array:
-    ...
+def trexp(
+    S: so3Array, theta: Optional[float] = None, check: bool = True
+) -> SO3Array: ...
 
 
 @overload  # pragma: no cover
-def trexp(S: se3Array, theta: Optional[float] = None, check: bool = True) -> SE3Array:
-    ...
+def trexp(
+    S: se3Array, theta: Optional[float] = None, check: bool = True
+) -> SE3Array: ...
 
 
 @overload  # pragma: no cover
-def trexp(S: ArrayLike3, theta: Optional[float] = None, check=True) -> SO3Array:
-    ...
+def trexp(S: ArrayLike3, theta: Optional[float] = None, check=True) -> SO3Array: ...
 
 
 @overload  # pragma: no cover
-def trexp(S: ArrayLike6, theta: Optional[float] = None, check=True) -> SE3Array:
-    ...
+def trexp(S: ArrayLike6, theta: Optional[float] = None, check=True) -> SE3Array: ...
 
 
 def trexp(S, theta=None, check=True):
@@ -1542,8 +1530,7 @@ def trexp(S, theta=None, check=True):
 
 
 @overload  # pragma: no cover
-def trnorm(R: SO3Array) -> SO3Array:
-    ...
+def trnorm(R: SO3Array) -> SO3Array: ...
 
 
 def trnorm(T: SE3Array) -> SE3Array:
@@ -1605,13 +1592,15 @@ def trnorm(T: SE3Array) -> SE3Array:
 
 
 @overload
-def trinterp(start: Optional[SO3Array], end: SO3Array, s: float, shortest: bool = True) -> SO3Array:
-    ...
+def trinterp(
+    start: Optional[SO3Array], end: SO3Array, s: float, shortest: bool = True
+) -> SO3Array: ...
 
 
 @overload
-def trinterp(start: Optional[SE3Array], end: SE3Array, s: float, shortest: bool = True) -> SE3Array:
-    ...
+def trinterp(
+    start: Optional[SE3Array], end: SE3Array, s: float, shortest: bool = True
+) -> SE3Array: ...
 
 
 def trinterp(start, end, s, shortest=True):
@@ -2224,8 +2213,7 @@ def rotvelxform(
     inverse: bool = False,
     full: bool = False,
     representation="rpy/xyz",
-) -> R3x3:
-    ...
+) -> R3x3: ...
 
 
 @overload  # pragma: no cover
@@ -2233,8 +2221,7 @@ def rotvelxform(
     𝚪: SO3Array,
     inverse: bool = False,
     full: bool = False,
-) -> R3x3:
-    ...
+) -> R3x3: ...
 
 
 @overload  # pragma: no cover
@@ -2243,8 +2230,7 @@ def rotvelxform(
     inverse: bool = False,
     full: bool = True,
     representation="rpy/xyz",
-) -> R6x6:
-    ...
+) -> R6x6: ...
 
 
 @overload  # pragma: no cover
@@ -2252,8 +2238,7 @@ def rotvelxform(
     𝚪: SO3Array,
     inverse: bool = False,
     full: bool = True,
-) -> R6x6:
-    ...
+) -> R6x6: ...
 
 
 def rotvelxform(
@@ -2465,15 +2450,13 @@ def rotvelxform(
 @overload  # pragma: no cover
 def rotvelxform_inv_dot(
     𝚪: ArrayLike3, 𝚪d: ArrayLike3, full: bool = False, representation: str = "rpy/xyz"
-) -> R3x3:
-    ...
+) -> R3x3: ...
 
 
 @overload  # pragma: no cover
 def rotvelxform_inv_dot(
     𝚪: ArrayLike3, 𝚪d: ArrayLike3, full: bool = True, representation: str = "rpy/xyz"
-) -> R6x6:
-    ...
+) -> R6x6: ...
 
 
 def rotvelxform_inv_dot(
@@ -2670,13 +2653,11 @@ def rotvelxform_inv_dot(
 
 
 @overload  # pragma: no cover
-def tr2adjoint(T: SO3Array) -> R3x3:
-    ...
+def tr2adjoint(T: SO3Array) -> R3x3: ...
 
 
 @overload  # pragma: no cover
-def tr2adjoint(T: SE3Array) -> R6x6:
-    ...
+def tr2adjoint(T: SE3Array) -> R6x6: ...
 
 
 def tr2adjoint(T):
@@ -3424,8 +3405,6 @@ if __name__ == "__main__":  # pragma: no cover
     # print(p)
 
     # print(angvelxform([p, q, r], representation='eul'))
-
-    import pathlib
 
     # exec(
     #     open(

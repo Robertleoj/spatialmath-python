@@ -6,7 +6,6 @@ Created on Fri Apr 10 14:22:36 2020
 @author", t)
 """
 
-
 import timeit
 from ansitable import ANSITable, Column
 

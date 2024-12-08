@@ -12,8 +12,6 @@ from spatialmath.pose2d import *
 
 # from spatialmath import super_pose as sp
 from spatialmath.base import *
-import spatialmath.base.argcheck as argcheck
-import spatialmath as sm
 from spatialmath.baseposematrix import BasePoseMatrix
 from spatialmath.twist import BaseTwist
 
