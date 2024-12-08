@@ -3,8 +3,8 @@ from math import pi
 import numpy.testing as nt
 import unittest
 
-from spatialmath import *
-from spatialmath.base import *
+from spatialmath import Quaternion, UnitQuaternion
+from spatialmath.base import rotx, roty, rotz, SO3, SE3, rpy2r, eul2r, angvec2r, unitvec, isscalar, isvector
 from spatialmath.baseposematrix import BasePoseMatrix
 
 import numpy as np
@@ -602,8 +602,6 @@ class TestUnitQuaternion(unittest.TestCase):
 
     def test_interp(self):
         rx = UnitQuaternion.Rx(pi / 2)
-        ry = UnitQuaternion.Ry(pi / 2)
-        rz = UnitQuaternion.Rz(pi / 2)
         u = UnitQuaternion()
 
         q = UnitQuaternion.RPY([0.2, 0.3, 0.4])
@@ -815,8 +813,8 @@ class TestQuaternion(unittest.TestCase):
         q1 = Quaternion([4, 3, 2, 1])
         q2 = Quaternion([-1, 2, -3, 4])
 
-        nt.assert_array_almost_equal(exp(log(q1)), q1)
-        nt.assert_array_almost_equal(exp(log(q2)), q2)
+        nt.assert_array_almost_equal(q1.exp().log(), q1)
+        nt.assert_array_almost_equal(q2.exp().log(), q2)
 
     def test_log(self):
         q1 = Quaternion([4, 3, 2, 1])

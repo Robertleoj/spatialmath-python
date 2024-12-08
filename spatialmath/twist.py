@@ -826,7 +826,7 @@ class Twist3(BaseTwist):
         """
         if smb.iszerovec(self.w):
             # rotational twist
-            return Twist3(self.S / smb.norm(S.w))
+            return Twist3(self.S / smb.norm(self.w))
         else:
             # prismatic twist
             return Twist3(smb.unitvec(self.v), [0, 0, 0])
@@ -1622,7 +1622,7 @@ class Twist2(BaseTwist):
         """
         if smb.iszerovec(self.w):
             # rotational twist
-            return Twist2(self.S / smb.norm(S.w))
+            return Twist2(self.S / smb.norm(self.w))
         else:
             # prismatic twist
             return Twist2(smb.unitvec(self.v), [0, 0, 0])
@@ -1817,7 +1817,7 @@ class Twist2(BaseTwist):
             return (
                 "Twist2([\n"
                 + ",\n".join(
-                    ["  [{:.5g}, {:.5g}, {:.5g}}]".format(*list(tw.S)) for tw in self]
+                    [f"  [{tw.S[0]:.5g}, {tw.S[1]:.5g}, {tw.S[2]:.5g}]" for tw in self]
                 )
                 + "\n])"
             )

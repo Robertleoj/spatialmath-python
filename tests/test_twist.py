@@ -1,14 +1,10 @@
 import numpy.testing as nt
 import unittest
-
-"""
-we will assume that the primitives rotx,trotx, etc. all work
-"""
 from math import pi
-from spatialmath.twist import *
+from spatialmath.twist import Twist3, Twist2
+import numpy as np
 
-# from spatialmath import super_pose # as sp
-from spatialmath.base import *
+from spatialmath.base import unitvec
 from spatialmath.baseposematrix import BasePoseMatrix
 from spatialmath import SE2, SE3
 from spatialmath.twist import BaseTwist

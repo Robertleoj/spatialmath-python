@@ -8,7 +8,17 @@ from numpy.typing import NDArray
 from abc import overload
 
 from spatialmath import base as smb
-from spatialmath.base.types import ArrayLike2, ArrayLike3, ArrayLike4, Color, Points2, R2x2, R3x3, SE3Array, ArrayLike
+from spatialmath.base.types import (
+    ArrayLike2,
+    ArrayLike3,
+    ArrayLike4,
+    Color,
+    Points2,
+    R2x2,
+    R3x3,
+    SE3Array,
+    ArrayLike,
+)
 
 # To assist code portability to headless platforms, these graphics primitives
 # are defined as null functions.
