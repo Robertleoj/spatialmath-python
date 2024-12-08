@@ -4,13 +4,22 @@ import unittest
 import sys
 import pytest
 
-"""
-we will assume that the primitives rotx,trotx, etc. all work
-"""
 from math import pi
 from spatialmath import SE3, SO3, SE2, UnitQuaternion
 import numpy as np
-from spatialmath.base import *
+from spatialmath.base import (
+    rotx,
+    roty,
+    rotz,
+    eul2r,
+    rpy2r,
+    transl,
+    trotx,
+    troty,
+    trotz,
+    eul2tr,
+    rpy2tr,
+)
 from spatialmath.baseposematrix import BasePoseMatrix
 from spatialmath.twist import BaseTwist
 
@@ -273,18 +282,6 @@ class TestSO3(unittest.TestCase):
         self.assertIsInstance(s, str)
         self.assertEqual(s.count("\n"), 2)
 
-    def test_printline(self):
-        R = SO3.Rx(0.3)
-
-        R.printline()
-        # s = R.printline(file=None)
-        # self.assertIsInstance(s, str)
-
-        R = SO3.Rx([0.3, 0.4, 0.5])
-        s = R.printline(file=None)
-        # self.assertIsInstance(s, str)
-        # self.assertEqual(s.count('\n'), 2)
-
     @pytest.mark.skipif(
         sys.platform.startswith("darwin") and sys.version_info < (3, 11),
         reason="tkinter bug with mac",
@@ -294,10 +291,6 @@ class TestSO3(unittest.TestCase):
 
         R = SO3.Rx(0.3)
         R.plot(block=False)
-
-        R2 = SO3.Rx(0.6)
-        # R.animate()
-        # R.animate(start=R.inv())
 
     def test_listpowers(self):
         R = SO3()
@@ -484,7 +477,6 @@ class TestSO3(unittest.TestCase):
         rx = SO3.Rx(pi / 2)
         ry = SO3.Ry(pi / 2)
         rz = SO3.Rz(pi / 2)
-        u = SO3()
 
         # multiply
         R = SO3([rx, ry, rz])
@@ -1081,7 +1073,6 @@ class TestSE3(unittest.TestCase):
         rx = SE3.Rx(pi / 2)
         ry = SE3.Ry(pi / 2)
         rz = SE3.Rz(pi / 2)
-        u = SE3()
 
         # multiply
         T = SE3([rx, ry, rz])

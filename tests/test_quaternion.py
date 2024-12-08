@@ -4,7 +4,19 @@ import numpy.testing as nt
 import unittest
 
 from spatialmath import Quaternion, UnitQuaternion
-from spatialmath.base import rotx, roty, rotz, SO3, SE3, rpy2r, eul2r, angvec2r, unitvec, isscalar, isvector
+from spatialmath.base import (
+    rotx,
+    roty,
+    rotz,
+    SO3,
+    SE3,
+    rpy2r,
+    eul2r,
+    angvec2r,
+    unitvec,
+    isscalar,
+    isvector,
+)
 from spatialmath.baseposematrix import BasePoseMatrix
 
 import numpy as np

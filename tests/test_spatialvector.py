@@ -2,7 +2,16 @@ import unittest
 import numpy.testing as nt
 import numpy as np
 
-from spatialmath.spatialvector import SpatialVelocity, SpatialVector, SpatialM6, SpatialAcceleration, SpatialForce, SpatialMomentum, SpatialInertia, SpatialF6
+from spatialmath.spatialvector import (
+    SpatialVelocity,
+    SpatialVector,
+    SpatialM6,
+    SpatialAcceleration,
+    SpatialForce,
+    SpatialMomentum,
+    SpatialInertia,
+    SpatialF6,
+)
 
 
 class TestSpatialVector(unittest.TestCase):
