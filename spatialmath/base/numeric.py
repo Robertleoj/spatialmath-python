@@ -1,7 +1,9 @@
 import re
 import numpy as np
 from spatialmath import base
-from spatialmath.base.types import *
+from spatialmath.base.types import ArrayLike, ArrayLike2, Points2
+from numpy.typing import NDArray
+from typing import Callable, Tuple
 
 # this is a collection of useful algorithms, not otherwise categorized
 

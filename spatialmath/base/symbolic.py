@@ -39,7 +39,7 @@ def sin(theta: float) -> float: ...
 def sin(theta: Symbol) -> Symbol: ...
 
 
-def sin(theta):
+def sin(theta: float | Symbol) -> float | Symbol:
     """
     Generalized sine function
 
@@ -58,7 +58,7 @@ def sin(theta):
     :seealso: :func:`sympy.sin`
     """
     if issymbol(theta):
-        return sympy.sin(theta)
+        return sympy.sin(theta)  # type: ignore
     else:
         return math.sin(theta)
 
@@ -71,7 +71,7 @@ def cos(theta: float) -> float: ...
 def cos(theta: Symbol) -> Symbol: ...
 
 
-def cos(theta):
+def cos(theta: float | Symbol) -> float | Symbol:
     """
     Generalized cosine function
 
@@ -90,7 +90,7 @@ def cos(theta):
     :seealso: :func:`sympy.cos`
     """
     if issymbol(theta):
-        return sympy.cos(theta)
+        return sympy.cos(theta)  # type: ignore
     else:
         return math.cos(theta)
 
@@ -103,7 +103,7 @@ def tan(theta: float) -> float: ...
 def tan(theta: Symbol) -> Symbol: ...
 
 
-def tan(theta):
+def tan(theta: float | Symbol) -> float | Symbol:
     """
     Generalized tangent function
 
@@ -119,10 +119,10 @@ def tan(theta):
         >>> tan(theta)
         >>> tan(0.5)
 
-    :seealso: :func:`sympy.cos`
+    :seealso: :func:`sympy.tan`
     """
     if issymbol(theta):
-        return sympy.tan(theta)
+        return sympy.tan(theta)  # type: ignore
     else:
         return math.tan(theta)
 
@@ -135,7 +135,7 @@ def sqrt(theta: float) -> float: ...
 def sqrt(theta: Symbol) -> Symbol: ...
 
 
-def sqrt(v):
+def sqrt(theta: float | Symbol) -> float | Symbol:
     """
     Generalized sqrt function
 
@@ -153,10 +153,10 @@ def sqrt(v):
 
     :seealso: :func:`sympy.sqrt`
     """
-    if issymbol(v):
-        return sympy.sqrt(v)
+    if issymbol(theta):
+        return sympy.sqrt(theta)  # type: ignore
     else:
-        return math.sqrt(v)
+        return math.sqrt(theta)
 
 
 def zero() -> Symbol:

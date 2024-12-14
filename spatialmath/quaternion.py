@@ -14,13 +14,12 @@ To use::
     :parts: 1
 """
 
-# pylint: disable=invalid-name
 from __future__ import annotations
 import math
 import numpy as np
 from typing import Any
 import spatialmath.base as smb
-from spatialmath.pose3d import SO3, SE3
+import spatialmath.pose3d as pose3d
 from spatialmath.baseposelist import BasePoseList
 from spatialmath.base.types import (
     ArrayLike3,
@@ -1031,11 +1030,11 @@ class UnitQuaternion(Quaternion):
                 else:
                     raise ValueError("array could not be interpreted as UnitQuaternion")
 
-            elif isinstance(s, SO3):
+            elif isinstance(s, pose3d.SO3):
                 # UnitQuaternion(x) x is SO3 or SE3 (since SE3 is subclass of SO3)
                 self.data = [smb.r2q(x.R) for x in s]
 
-            elif isinstance(s[0], SO3):
+            elif isinstance(s[0], pose3d.SO3):
                 # list of SO3 or SE3
                 self.data = [smb.r2q(x.R) for x in s]
 
@@ -2281,7 +2280,7 @@ class UnitQuaternion(Quaternion):
             >>> UQ.Rz(0.3).SO3()
 
         """
-        return SO3(self.R, check=False)
+        return pose3d.SO3(self.R, check=False)
 
     def SE3(self) -> SE3:
         """
@@ -2301,7 +2300,7 @@ class UnitQuaternion(Quaternion):
             >>> UQ.Rz(0.3).SE3()
 
         """
-        return SE3(smb.r2t(self.R), check=False)
+        return pose3d.SE3(smb.r2t(self.R), check=False)
 
 
 if __name__ == "__main__":  # pragma: no cover

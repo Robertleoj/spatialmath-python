@@ -28,7 +28,8 @@ from spatialmath.base.vectors import (
     angle_std,
     removesmall,
 )
-from spatialmath.base.symbolic import symbol, sqrt
+from spatialmath.base.symbolic import sqrt
+import sympy as sp
 
 
 import matplotlib.pyplot as plt
@@ -99,7 +100,7 @@ class TestVector(unittest.TestCase):
         self.assertAlmostEqual(normsq(np.r_[1, 2, 3]), 14)
 
     def test_norm_sym(self):
-        x, y = symbol("x y")
+        x, y = sp.symbols("x y")
         v = [x, y]
         self.assertEqual(norm(v), sqrt(x**2 + y**2))
         self.assertEqual(norm(np.r_[v]), sqrt(x**2 + y**2))

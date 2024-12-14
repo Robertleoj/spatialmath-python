@@ -40,7 +40,7 @@ from spatialmath.base.transforms3d import (
     isskew,
 )
 from spatialmath.base.transforms2d import trot2, transl2, rot2, isrot2, ishom2
-from spatialmath.base.symbolic import symbol
+import sympy as sp
 
 
 class TestND(unittest.TestCase):
@@ -79,14 +79,14 @@ class TestND(unittest.TestCase):
             r2t(np.ones((3, 3)), check=True)
 
     def test_r2t_sym(self):
-        theta = symbol("theta")
+        theta = sp.symbols("theta")
         R = rot2(theta)
         T = r2t(R)
         self.assertEqual(r2t(R).dtype, "O")
         nt.assert_array_almost_equal(T[0:2, 2], np.r_[0, 0])
         nt.assert_array_almost_equal(T[:2, :2], R)
 
-        theta = symbol("theta")
+        theta = sp.symbols("theta")
         R = rotx(theta)
         T = r2t(R)
         self.assertEqual(r2t(R).dtype, "O")

@@ -1,13 +1,3 @@
-# Part of Spatial Math Toolbox for Python
-# Copyright (c) 2000 Peter Corke
-# MIT Licence, see details in top-level file: LICENCE
-
-# matplotlib inline
-
-# line.set_data()
-# text.set_position()
-# quiver.set_offsets(), quiver.set_UVC()
-# FancyArrow.set_xy()
 from __future__ import annotations
 import os.path
 import numpy as np
@@ -15,7 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib import animation
 import spatialmath.base as smb
 from collections.abc import Iterable, Iterator
-from spatialmath.base.types import *
+from spatialmath.base.types import ArrayLike, SO3Array, SE3Array, SO2Array, SE2Array
 
 # global variable holds reference to FuncAnimation object, this is essential
 # for animatiion to work
@@ -49,10 +39,10 @@ class Animate:
 
     def __init__(
         self,
-        ax: Optional[plt.Axes] = None,
-        dim: Optional[ArrayLike] = None,
-        projection: Optional[str] = "ortho",
-        labels: Optional[Tuple[str, str, str]] = ("X", "Y", "Z"),
+        ax: plt.Axes | None = None,
+        dim: ArrayLike | None = None,
+        projection: str = "ortho",
+        labels: tuple[str, str, str] = ("X", "Y", "Z"),
         **kwargs,
     ):
         """
@@ -122,8 +112,8 @@ class Animate:
 
     def trplot(
         self,
-        end: Union[SO3Array, SE3Array],
-        start: Optional[Union[SO3Array, SE3Array]] = None,
+        end: SO3Array | SE3Array,
+        start: SO3Array | SE3Array | None = None,
         **kwargs,
     ):
         """
@@ -174,8 +164,8 @@ class Animate:
 
     def run(
         self,
-        movie: Optional[str] = None,
-        axes: Optional[plt.Axes] = None,
+        movie: str | bool | None = None,
+        axes: plt.Axes | None = None,
         repeat: bool = False,
         interval: int = 50,
         nframes: int = 100,
@@ -295,7 +285,7 @@ class Animate:
     def __str__(self) -> str:
         return f"Animate(len={len(self.displaylist)}"
 
-    def artists(self) -> List[plt.Artist]:
+    def artists(self) -> list[plt.Artist]:
         """
         List of artists that need to be updated
 
@@ -326,7 +316,7 @@ class Animate:
             self.h.set_data(p[0, :], p[1, :])
             self.h.set_3d_properties(p[2, :])
 
-    def plot(self, x: ArrayLike, y: ArrayLike, z: ArrayLike, *args: List, **kwargs):
+    def plot(self, x: ArrayLike, y: ArrayLike, z: ArrayLike, *args: list, **kwargs):
         """
         Plot a polyline
 
@@ -394,7 +384,7 @@ class Animate:
         u: ArrayLike,
         v: ArrayLike,
         w: ArrayLike,
-        *args: List,
+        *args: list,
         **kwargs,
     ):
         """
@@ -441,7 +431,7 @@ class Animate:
             self.h.set_position((p[0], p[1]))
             self.h.set_3d_properties(z=p[2], zdir="x")
 
-    def text(self, x: float, y: float, z: float, *args: List, **kwargs):
+    def text(self, x: float, y: float, z: float, *args: list, **kwargs):
         """
         Plot text
 
@@ -471,22 +461,22 @@ class Animate:
 
     # ------------------- wrappers for Axes primitives
 
-    def set_xlim(self, *args: List, **kwargs):
+    def set_xlim(self, *args: list, **kwargs):
         self.ax.set_xlim(*args, **kwargs)
 
-    def set_ylim(self, *args: List, **kwargs):
+    def set_ylim(self, *args: list, **kwargs):
         self.ax.set_ylim(*args, **kwargs)
 
-    def set_zlim(self, *args: List, **kwargs):
+    def set_zlim(self, *args: list, **kwargs):
         self.ax.set_zlim(*args, **kwargs)
 
-    def set_xlabel(self, *args: List, **kwargs):
+    def set_xlabel(self, *args: list, **kwargs):
         self.ax.set_xlabel(*args, **kwargs)
 
-    def set_ylabel(self, *args: List, **kwargs):
+    def set_ylabel(self, *args: list, **kwargs):
         self.ax.set_ylabel(*args, **kwargs)
 
-    def set_zlabel(self, *args: List, **kwargs):
+    def set_zlabel(self, *args: list, **kwargs):
         self.ax.set_zlabel(*args, **kwargs)
 
 
@@ -516,9 +506,9 @@ class Animate2:
 
     def __init__(
         self,
-        axes: Optional[plt.Axes] = None,
-        dims: Optional[ArrayLike] = None,
-        labels: Tuple[str, str] = ("X", "Y"),
+        axes: plt.Axes | None = None,
+        dims: ArrayLike | None = None,
+        labels: tuple[str, str] = ("X", "Y"),
         **kwargs,
     ):
         """
@@ -566,8 +556,8 @@ class Animate2:
 
     def trplot2(
         self,
-        end: Union[SO2Array, SE2Array],
-        start: Optional[Union[SO2Array, SE2Array]] = None,
+        end: SO2Array | SE2Array,
+        start: SO2Array | SE2Array | None = None,
         **kwargs,
     ):
         """
@@ -609,8 +599,8 @@ class Animate2:
 
     def run(
         self,
-        movie: Optional[str] = None,
-        axes: Optional[plt.Axes] = None,
+        movie: str | bool | None = None,
+        axes: plt.Axes | None = None,
         repeat: bool = False,
         interval: int = 50,
         nframes: int = 100,

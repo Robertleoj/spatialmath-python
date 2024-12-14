@@ -2,6 +2,7 @@
 
 from spatialmath.pose2d import SO2, SE2
 from spatialmath.pose3d import SO3, SE3
+import importlib.metadata
 from spatialmath.baseposematrix import BasePoseMatrix
 from spatialmath.geom2d import Line2, LineSegment2, Polygon2, Ellipse
 from spatialmath.geom3d import Line3, Plane3
@@ -49,9 +50,5 @@ __all__ = [
     "SplineFit",
 ]
 
-try:
-    import importlib.metadata
 
-    __version__ = importlib.metadata.version("spatialmath-python")
-except:
-    pass
+__version__ = importlib.metadata.version("spatialmath-python")

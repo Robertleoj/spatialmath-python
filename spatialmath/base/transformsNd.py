@@ -1,33 +1,31 @@
-# Part of Spatial Math Toolbox for Python
-# Copyright (c) 2000 Peter Corke
-# MIT Licence, see details in top-level file: LICENCE
-
-"""
-This modules contains functions to operate on special matrices in 2D or 3D, for
-example SE(n), SO(n), se(n) and so(n) where n is 2 or 3.
-
-Vector arguments are what numpy refers to as ``array_like`` and can be a list,
-tuple, numpy array, numpy row vector or numpy column vector.
-"""
-# pylint: disable=invalid-name
-
 import numpy as np
-from spatialmath.base.types import *
+from spatialmath.base.types import (
+    SO2Array,
+    SE2Array,
+    SO3Array,
+    SE3Array,
+    SEnArray,
+    SOnArray,
+    R2,
+    R3,
+    Rn,
+    ArrayLike2,
+    ArrayLike3,
+    se2Array,
+    se3Array,
+    so2Array,
+    so3Array,
+    senArray,
+    R1,
+    R6,
+    ArrayLike6,
+)
+from numpy.typing import NDArray
 from spatialmath.base.argcheck import getvector, isvector
 
-# from spatialmath.base.symbolic import issymbol
-# from spatialmath.base.transforms3d import transl
-# from spatialmath.base.transforms2d import transl2
+from typing import overload
 
-
-try:  # pragma: no cover
-    # print('Using SymPy')
-    from sympy import Matrix
-
-    _symbolics = True
-
-except ImportError:  # pragma: no cover
-    _symbolics = False
+from sympy import Matrix
 
 _eps = np.finfo(np.float64).eps
 
@@ -161,14 +159,14 @@ b = t2r(np.eye(3))
 
 
 @overload
-def tr2rt(T: SE2Array, check=False) -> Tuple[SO2Array, R2]: ...
+def tr2rt(T: SE2Array, check=False) -> tuple[SO2Array, R2]: ...
 
 
 @overload
-def tr2rt(T: SE3Array, check=False) -> Tuple[SO3Array, R3]: ...
+def tr2rt(T: SE3Array, check=False) -> tuple[SO3Array, R3]: ...
 
 
-def tr2rt(T: SEnArray, check=False) -> Tuple[SOnArray, Rn]:
+def tr2rt(T: SEnArray, check=False) -> tuple[SOnArray, Rn]:
     """
     Convert SE(n) to SO(n) and translation
 
@@ -584,7 +582,7 @@ def skewa(v: ArrayLike3) -> se2Array: ...
 def skewa(v: ArrayLike6) -> se3Array: ...
 
 
-def skewa(v: Union[ArrayLike3, ArrayLike6]) -> Union[se2Array, se3Array]:
+def skewa(v: ArrayLike3 | ArrayLike6) -> se2Array | se3Array:
     r"""
     Create augmented skew-symmetric metrix from vector
 
@@ -638,7 +636,7 @@ def vexa(Omega: se2Array, check: bool = False) -> R3: ...
 def vexa(Omega: se3Array, check: bool = False) -> R6: ...
 
 
-def vexa(Omega: senArray, check: bool = False) -> Union[R3, R6]:
+def vexa(Omega: senArray, check: bool = False) -> R3 | R6:
     r"""
     Convert skew-symmetric matrix to vector
 
@@ -825,7 +823,7 @@ def det(m: np.ndarray) -> float:
 
     :SymPy: supported
     """
-    if m.dtype.kind == "O" and _symbolics:
+    if m.dtype.kind == "O":
         return Matrix(m).det()
     else:
         return np.linalg.det(m)

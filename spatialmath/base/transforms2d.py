@@ -1,45 +1,33 @@
-# Part of Spatial Math Toolbox for Python
-# Copyright (c) 2000 Peter Corke
-# MIT Licence, see details in top-level file: LICENCE
-
-"""
-These functions create and manipulate 2D rotation matrices and rigid-body
-transformations as 2x2 SO(2) matrices and 3x3 SE(2) matrices respectively.
-These matrices are represented as 2D NumPy arrays.
-
-Vector arguments are what numpy refers to as ``array_like`` and can be a list,
-tuple, numpy array, numpy row vector or numpy column vector.
-
-"""
-
-# pylint: disable=invalid-name
-
 import sys
 import math
 import numpy as np
-
-try:
-    import matplotlib.pyplot as plt
-
-    _matplotlib_exists = True
-except ImportError:
-    _matplotlib_exists = False
-
+from numpy.typing import NDArray
+import matplotlib.pyplot as plt
+from scipy.spatial import KDTree
 import spatialmath.base as smb
-from spatialmath.base.types import *
+from matplotlib.axes import Axes
+from spatialmath.base.types import (
+    SO2Array,
+    SE2Array,
+    ArrayLike2,
+    R2,
+    R3,
+    ArrayLike3,
+    so2Array,
+    se2Array,
+    R1x1,
+    R3x3,
+    ArrayLikePure,
+    SE3Array,
+    Points2,
+    ArrayLike,
+)
 from spatialmath.base.transformsNd import rt2tr
 from spatialmath.base.vectors import unitvec
+import sympy
+from typing import overload, Any, cast, TextIO
 
 _eps = np.finfo(np.float64).eps
-
-try:  # pragma: no cover
-    # print('Using SymPy')
-    import sympy
-
-    _symbolics = True
-
-except ImportError:  # pragma: no cover
-    _symbolics = False
 
 
 # ---------------------------------------------------------------------------------------#
@@ -75,7 +63,7 @@ def rot2(theta: float, unit: str = "rad") -> SO2Array:
 
 
 # ---------------------------------------------------------------------------------------#
-def trot2(theta: float, unit: str = "rad", t: Optional[ArrayLike2] = None) -> SE2Array:
+def trot2(theta: float, unit: str = "rad", t: ArrayLike2 | None = None) -> SE2Array:
     """
     Create SE(2) pure rotation
 
@@ -163,7 +151,7 @@ def tr2xyt(T: SE2Array, unit: str = "rad") -> R3:
     :seealso: trot2
     """
 
-    if T.dtype == "O" and _symbolics:
+    if T.dtype == "O":
         angle = sympy.atan2(T[1, 0], T[0, 0])
     else:
         angle = math.atan2(T[1, 0], T[0, 0])
@@ -474,11 +462,11 @@ def trlog2(
 
 
 def trlog2(
-    T: Union[SO2Array, SE2Array],
+    T: SO2Array | SE2Array,
     twist: bool = False,
     check: bool = True,
     tol: float = 20,
-) -> Union[float, R3, so2Array, se2Array]:
+) -> float | R3 | so2Array | se2Array:
     """
     Logarithm of SO(2) or SE(2) matrix
 
@@ -556,22 +544,18 @@ def trlog2(
 
 # ---------------------------------------------------------------------------------------#
 @overload  # pragma: no cover
-def trexp2(
-    S: so2Array, theta: Optional[float] = None, check: bool = True
-) -> SO2Array: ...
+def trexp2(S: so2Array, theta: float | None = None, check: bool = True) -> SO2Array: ...
 
 
 @overload  # pragma: no cover
-def trexp2(
-    S: se2Array, theta: Optional[float] = None, check: bool = True
-) -> SE2Array: ...
+def trexp2(S: se2Array, theta: float | None = None, check: bool = True) -> SE2Array: ...
 
 
 def trexp2(
-    S: Union[so2Array, se2Array],
-    theta: Optional[float] = None,
+    S: so2Array | se2Array,
+    theta: float | None = None,
     check: bool = True,
-) -> Union[SO2Array, SE2Array]:
+) -> SO2Array | SE2Array:
     """
     Exponential of so(2) or se(2) matrix
 
@@ -734,7 +718,6 @@ def trnorm2(T: SE2Array) -> SE2Array:
     if not ishom2(T) and not isrot2(T):
         raise ValueError("expecting SO(2) or SE(2)")
 
-    a = T[:, 0]
     b = T[:, 1]
 
     b = unitvec(b)
@@ -846,13 +829,13 @@ def tr2jac2(T: SE2Array) -> R3x3:
 
 @overload
 def trinterp2(
-    start: Optional[SO2Array], end: SO2Array, s: float, shortest: bool = True
+    start: SO2Array | None, end: SO2Array, s: float, shortest: bool = True
 ) -> SO2Array: ...
 
 
 @overload
 def trinterp2(
-    start: Optional[SE2Array], end: SE2Array, s: float, shortest: bool = True
+    start: SE2Array | None, end: SE2Array, s: float, shortest: bool = True
 ) -> SE2Array: ...
 
 
@@ -950,7 +933,7 @@ def trinterp2(start, end, s, shortest: bool = True):
 
 
 def trprint2(
-    T: Union[SO2Array, SE2Array],
+    T: SO2Array | SE2Array,
     label: str = "",
     file: TextIO = sys.stdout,
     fmt: str = "{:.3g}",
@@ -1087,7 +1070,7 @@ def points2tr2(p1: NDArray, p2: NDArray) -> SE2Array:
 def ICP2d(
     reference: Points2,
     source: Points2,
-    T: Optional[SE2Array] = None,
+    T: SE2Array | None = None,
     max_iter: int = 20,
     min_delta_err: float = 1e-4,
 ) -> SE2Array:
@@ -1125,11 +1108,9 @@ def ICP2d(
     # hack below to use points2tr above
     # use ClayFlannigan's improved data association
 
-    from scipy.spatial import KDTree
-
     def _FindCorrespondences(
         tree, source, reference
-    ) -> Tuple[NDArray, NDArray, NDArray]:
+    ) -> tuple[NDArray, NDArray, NDArray]:
         # get distances to nearest neighbors and indices of nearest neighbors
         dist, indices = tree.query(source.T)
 
@@ -1216,299 +1197,294 @@ def ICP2d(
     return T
 
 
-if _matplotlib_exists:
-    import matplotlib.pyplot as plt
+def trplot2(
+    T: SO2Array | SE2Array,
+    color: str = "blue",
+    frame: str | None = None,
+    axislabel: bool = True,
+    axissubscript: bool = True,
+    textcolor: str | None = None,
+    labels: tuple[str, str] = ("X", "Y"),
+    length: float = 1,
+    arrow: bool = True,
+    originsize: float = 20,
+    rviz: bool = False,
+    ax: Axes | None = None,
+    block: bool | None = None,
+    dims: ArrayLike | None = None,
+    wtl: float = 0.2,
+    width: float = 1,
+    d1: float = 0.1,
+    d2: float = 1.15,
+    **kwargs,
+):
+    """
+    Plot a 2D coordinate frame
 
-    # from mpl_toolkits.axisartist import Axes
-    from matplotlib.axes import Axes
+    :param T: an SE(3) or SO(3) pose to be displayed as coordinate frame
+    :type: ndarray(3,3) or ndarray(2,2)
+    :param color: color of the lines defining the frame
+    :type color: str
+    :param textcolor: color of text labels for the frame, default color of lines above
+    :type textcolor: str
+    :param frame: label the frame, name is shown below the frame and as subscripts on the frame axis labels
+    :type frame: str
+    :param axislabel: display labels on axes, default True
+    :type axislabel: bool
+    :param axissubscript: display subscripts on axis labels, default True
+    :type axissubscript: bool
+    :param labels: labels for the axes, defaults to X and Y
+    :type labels: 2-tuple of strings
+    :param length: length of coordinate frame axes, default 1
+    :type length: float
+    :param arrow: show arrow heads, default True
+    :type arrow: bool
+    :param ax: the axes to plot into, defaults to current axes
+    :type ax: Axes3D reference
+    :param block: run the GUI main loop until all windows are closed, default None
+    :type block: bool
+    :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax]
+    :type dims: array_like(4)
+    :param wtl: width-to-length ratio for arrows, default 0.2
+    :type wtl: float
+    :param rviz: show Rviz style arrows, default False
+    :type rviz: bool
+    :param width: width of lines, default 1
+    :type width: float
+    :param d1: distance of frame axis label text from origin, default 0.05
+    :type d1: float
+    :param d2: distance of frame label text from origin, default 1.15
+    :type d2: float
+    :return: axes containing the frame
+    :rtype: AxesSubplot
+    :raises ValueError: bad argument
 
-    def trplot2(
-        T: Union[SO2Array, SE2Array],
-        color: str = "blue",
-        frame: Optional[str] = None,
-        axislabel: bool = True,
-        axissubscript: bool = True,
-        textcolor: Optional[Color] = None,
-        labels: Tuple[str, str] = ("X", "Y"),
-        length: float = 1,
-        arrow: bool = True,
-        originsize: float = 20,
-        rviz: bool = False,
-        ax: Optional[Axes] = None,
-        block: Optional[bool] = None,
-        dims: Optional[ArrayLike] = None,
-        wtl: float = 0.2,
-        width: float = 1,
-        d1: float = 0.1,
-        d2: float = 1.15,
-        **kwargs,
-    ):
-        """
-        Plot a 2D coordinate frame
+    Adds a 2D coordinate frame represented by the SO(2) or SE(2) matrix to the current axes.
 
-        :param T: an SE(3) or SO(3) pose to be displayed as coordinate frame
-        :type: ndarray(3,3) or ndarray(2,2)
-        :param color: color of the lines defining the frame
-        :type color: str
-        :param textcolor: color of text labels for the frame, default color of lines above
-        :type textcolor: str
-        :param frame: label the frame, name is shown below the frame and as subscripts on the frame axis labels
-        :type frame: str
-        :param axislabel: display labels on axes, default True
-        :type axislabel: bool
-        :param axissubscript: display subscripts on axis labels, default True
-        :type axissubscript: bool
-        :param labels: labels for the axes, defaults to X and Y
-        :type labels: 2-tuple of strings
-        :param length: length of coordinate frame axes, default 1
-        :type length: float
-        :param arrow: show arrow heads, default True
-        :type arrow: bool
-        :param ax: the axes to plot into, defaults to current axes
-        :type ax: Axes3D reference
-        :param block: run the GUI main loop until all windows are closed, default None
-        :type block: bool
-        :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax]
-        :type dims: array_like(4)
-        :param wtl: width-to-length ratio for arrows, default 0.2
-        :type wtl: float
-        :param rviz: show Rviz style arrows, default False
-        :type rviz: bool
-        :param width: width of lines, default 1
-        :type width: float
-        :param d1: distance of frame axis label text from origin, default 0.05
-        :type d1: float
-        :param d2: distance of frame label text from origin, default 1.15
-        :type d2: float
-        :return: axes containing the frame
-        :rtype: AxesSubplot
-        :raises ValueError: bad argument
+    The appearance of the coordinate frame depends on many parameters:
 
-        Adds a 2D coordinate frame represented by the SO(2) or SE(2) matrix to the current axes.
+    - coordinate axes depend on:
 
-        The appearance of the coordinate frame depends on many parameters:
+        - ``color`` of axes
+        - ``width`` of line
+        - ``length`` of line
+        - ``arrow`` if True [default] draw the axis with an arrow head
 
-        - coordinate axes depend on:
+    - coordinate axis labels depend on:
 
-            - ``color`` of axes
-            - ``width`` of line
-            - ``length`` of line
-            - ``arrow`` if True [default] draw the axis with an arrow head
+        - ``axislabel`` if True [default] label the axis, default labels are X, Y, Z
+        - ``labels`` 2-list of alternative axis labels
+        - ``textcolor`` which defaults to ``color``
+        - ``axissubscript`` if True [default] add the frame label ``frame`` as a subscript
+        for each axis label
 
-        - coordinate axis labels depend on:
+    - coordinate frame label depends on:
 
-            - ``axislabel`` if True [default] label the axis, default labels are X, Y, Z
-            - ``labels`` 2-list of alternative axis labels
-            - ``textcolor`` which defaults to ``color``
-            - ``axissubscript`` if True [default] add the frame label ``frame`` as a subscript
-            for each axis label
+        - `frame` the label placed inside {...} near the origin of the frame
 
-        - coordinate frame label depends on:
+    - a dot at the origin
 
-            - `frame` the label placed inside {...} near the origin of the frame
-
-        - a dot at the origin
-
-            - ``originsize`` size of the dot, if zero no dot
-            - ``origincolor`` color of the dot, defaults to ``color``
-            - If no current figure, one is created
-            - If current figure, but no axes, a 3d Axes is created
-
-        Examples::
-
-            trplot2(T, frame='A')
-            trplot2(T, frame='A', color='green')
-            trplot2(T1, 'labels', 'AB');
-
-        .. plot::
-
-            import matplotlib.pyplot as plt
-            from spatialmath.base import trplot2, transl2, trot2
-            import math
-            fig, ax = plt.subplots(3,3, figsize=(10,10))
-            text_opts = dict(bbox=dict(boxstyle="round",
-                fc="w",
-                alpha=0.9),
-                zorder=20,
-                family='monospace',
-                fontsize=8,
-                verticalalignment='top')
-            T = transl2(2, 1)@trot2(math.pi/3)
-            trplot2(T, ax=ax[0][0], dims=[0,4,0,4])
-            ax[0][0].text(0.2, 3.8, "trplot2(T)", **text_opts)
-            trplot2(T, ax=ax[0][1], dims=[0,4,0,4], originsize=0)
-            ax[0][1].text(0.2, 3.8, "trplot2(T, originsize=0)", **text_opts)
-            trplot2(T, ax=ax[0][2], dims=[0,4,0,4], arrow=False)
-            ax[0][2].text(0.2, 3.8, "trplot2(T, arrow=False)", **text_opts)
-            trplot2(T, ax=ax[1][0], dims=[0,4,0,4], axislabel=False)
-            ax[1][0].text(0.2, 3.8, "trplot2(T, axislabel=False)", **text_opts)
-            trplot2(T, ax=ax[1][1], dims=[0,4,0,4], width=3)
-            ax[1][1].text(0.2, 3.8, "trplot2(T, width=3)", **text_opts)
-            trplot2(T, ax=ax[1][2], dims=[0,4,0,4], frame='B')
-            ax[1][2].text(0.2, 3.8, "trplot2(T, frame='B')", **text_opts)
-            trplot2(T, ax=ax[2][0], dims=[0,4,0,4], color='r', textcolor='k')
-            ax[2][0].text(0.2, 3.8, "trplot2(T, color='r',textcolor='k')", **text_opts)
-            trplot2(T, ax=ax[2][1], dims=[0,4,0,4], labels=("u", "v"))
-            ax[2][1].text(0.2, 3.8, "trplot2(T, labels=('u', 'v'))", **text_opts)
-            trplot2(T, ax=ax[2][2], dims=[0,4,0,4], rviz=True)
-            ax[2][2].text(0.2, 3.8, "trplot2(T, rviz=True)", **text_opts)
-
-
-        :SymPy: not supported
-
-        :seealso: :func:`tranimate2` :func:`plotvol2` :func:`axes_logic`
-        """
-
-        # TODO
-        # animation
-        # style='line', 'arrow', 'rviz'
-
-        # check input types
-        if isrot2(T, check=True):
-            T = smb.r2t(cast(SO2Array, T))
-        elif not ishom2(T, check=True):
-            raise ValueError("argument is not valid SE(2) matrix")
-
-        ax = smb.axes_logic(ax, 2)
-
-        try:
-            if not ax.get_xlabel():
-                ax.set_xlabel(labels[0])
-            if not ax.get_ylabel():
-                ax.set_ylabel(labels[1])
-        except AttributeError:
-            pass  # if axes are an Animate object
-
-        if not hasattr(ax, "_plotvol"):
-            ax.set_aspect("equal")
-
-        if dims is not None:
-            ax.axis(smb.expand_dims(dims))
-        elif not hasattr(ax, "_plotvol"):
-            ax.autoscale(enable=True, axis="both")
-
-        # create unit vectors in homogeneous form
-        o = T @ np.array([0, 0, 1])
-        x = T @ np.array([length, 0, 1])
-        y = T @ np.array([0, length, 1])
-
-        # draw the axes
-
-        if rviz:
-            ax.plot([o[0], x[0]], [o[1], x[1]], color="red", linewidth=5 * width)
-            ax.plot([o[0], y[0]], [o[1], y[1]], color="lime", linewidth=5 * width)
-        elif arrow:
-            ax.quiver(
-                o[0],
-                o[1],
-                x[0] - o[0],
-                x[1] - o[1],
-                angles="xy",
-                scale_units="xy",
-                scale=1,
-                linewidth=width,
-                facecolor=color,
-                edgecolor=color,
-            )
-            ax.quiver(
-                o[0],
-                o[1],
-                y[0] - o[0],
-                y[1] - o[1],
-                angles="xy",
-                scale_units="xy",
-                scale=1,
-                linewidth=width,
-                facecolor=color,
-                edgecolor=color,
-            )
-        else:
-            ax.plot([o[0], x[0]], [o[1], x[1]], color=color, linewidth=width)
-            ax.plot([o[0], y[0]], [o[1], y[1]], color=color, linewidth=width)
-
-        if originsize > 0:
-            ax.scatter(x=[o[0], x[0], y[0]], y=[o[1], x[1], y[1]], s=[originsize, 0, 0])
-
-        # label the frame
-        if frame:
-            if textcolor is not None:
-                color = textcolor
-
-            o1 = T @ np.array([-d1, -d1, 1])
-            ax.text(
-                o1[0],
-                o1[1],
-                r"$\{" + frame + r"\}$",
-                color=color,
-                verticalalignment="top",
-                horizontalalignment="left",
-            )
-
-        if axislabel:
-            if textcolor is not None:
-                color = textcolor
-            # add the labels to each axis
-            x = (x - o) * d2 + o
-            y = (y - o) * d2 + o
-
-            if frame is None or not axissubscript:
-                format = "${:s}$"
-            else:
-                format = "${:s}_{{{:s}}}$"
-
-            ax.text(
-                x[0],
-                x[1],
-                format.format(labels[0], frame),
-                color=color,
-                horizontalalignment="center",
-                verticalalignment="center",
-            )
-            ax.text(
-                y[0],
-                y[1],
-                format.format(labels[1], frame),
-                color=color,
-                horizontalalignment="center",
-                verticalalignment="center",
-            )
-
-        if block is not None:
-            # calling this at all, causes FuncAnimation to fail so when invoked from tranimate2 skip this bit
-            plt.show(block=block)
-        return ax
-
-    def tranimate2(T: Union[SO2Array, SE2Array], **kwargs):
-        """
-        Animate a 2D coordinate frame
-
-        :param T: an SE(2) or SO(2) pose to be displayed as coordinate frame
-        :type: ndarray(3,3) or ndarray(2,2)
-        :param nframes: number of steps in the animation [defaault 100]
-        :type nframes: int
-        :param repeat: animate in endless loop [default False]
-        :type repeat: bool
-        :param interval: number of milliseconds between frames [default 50]
-        :type interval: int
-        :param movie: name of file to write MP4 movie into
-        :type movie: str
-
-        Animates a 2D coordinate frame moving from the world frame to a frame represented by the SO(2) or SE(2) matrix to the current axes.
-
+        - ``originsize`` size of the dot, if zero no dot
+        - ``origincolor`` color of the dot, defaults to ``color``
         - If no current figure, one is created
         - If current figure, but no axes, a 3d Axes is created
 
+    Examples::
 
-        Examples:
+        trplot2(T, frame='A')
+        trplot2(T, frame='A', color='green')
+        trplot2(T1, 'labels', 'AB');
 
-                tranimate2(transl(1,2)@trot2(1), frame='A', arrow=False, dims=[0, 5])
-                tranimate2(transl(1,2)@trot2(1), frame='A', arrow=False, dims=[0, 5], movie='spin.mp4')
-        """
-        dims = kwargs.pop("dims", None)
-        ax = kwargs.pop("ax", None)
-        anim = smb.animate.Animate2(dims=dims, axes=ax, **kwargs)
-        anim.trplot2(T, **kwargs)
-        return anim.run(**kwargs)
+    .. plot::
+
+        import matplotlib.pyplot as plt
+        from spatialmath.base import trplot2, transl2, trot2
+        import math
+        fig, ax = plt.subplots(3,3, figsize=(10,10))
+        text_opts = dict(bbox=dict(boxstyle="round",
+            fc="w",
+            alpha=0.9),
+            zorder=20,
+            family='monospace',
+            fontsize=8,
+            verticalalignment='top')
+        T = transl2(2, 1)@trot2(math.pi/3)
+        trplot2(T, ax=ax[0][0], dims=[0,4,0,4])
+        ax[0][0].text(0.2, 3.8, "trplot2(T)", **text_opts)
+        trplot2(T, ax=ax[0][1], dims=[0,4,0,4], originsize=0)
+        ax[0][1].text(0.2, 3.8, "trplot2(T, originsize=0)", **text_opts)
+        trplot2(T, ax=ax[0][2], dims=[0,4,0,4], arrow=False)
+        ax[0][2].text(0.2, 3.8, "trplot2(T, arrow=False)", **text_opts)
+        trplot2(T, ax=ax[1][0], dims=[0,4,0,4], axislabel=False)
+        ax[1][0].text(0.2, 3.8, "trplot2(T, axislabel=False)", **text_opts)
+        trplot2(T, ax=ax[1][1], dims=[0,4,0,4], width=3)
+        ax[1][1].text(0.2, 3.8, "trplot2(T, width=3)", **text_opts)
+        trplot2(T, ax=ax[1][2], dims=[0,4,0,4], frame='B')
+        ax[1][2].text(0.2, 3.8, "trplot2(T, frame='B')", **text_opts)
+        trplot2(T, ax=ax[2][0], dims=[0,4,0,4], color='r', textcolor='k')
+        ax[2][0].text(0.2, 3.8, "trplot2(T, color='r',textcolor='k')", **text_opts)
+        trplot2(T, ax=ax[2][1], dims=[0,4,0,4], labels=("u", "v"))
+        ax[2][1].text(0.2, 3.8, "trplot2(T, labels=('u', 'v'))", **text_opts)
+        trplot2(T, ax=ax[2][2], dims=[0,4,0,4], rviz=True)
+        ax[2][2].text(0.2, 3.8, "trplot2(T, rviz=True)", **text_opts)
+
+
+    :SymPy: not supported
+
+    :seealso: :func:`tranimate2` :func:`plotvol2` :func:`axes_logic`
+    """
+
+    # TODO
+    # animation
+    # style='line', 'arrow', 'rviz'
+
+    # check input types
+    if isrot2(T, check=True):
+        T = smb.r2t(cast(SO2Array, T))
+    elif not ishom2(T, check=True):
+        raise ValueError("argument is not valid SE(2) matrix")
+
+    ax = smb.axes_logic(ax, 2)
+
+    try:
+        if not ax.get_xlabel():
+            ax.set_xlabel(labels[0])
+        if not ax.get_ylabel():
+            ax.set_ylabel(labels[1])
+    except AttributeError:
+        pass  # if axes are an Animate object
+
+    if not hasattr(ax, "_plotvol"):
+        ax.set_aspect("equal")
+
+    if dims is not None:
+        ax.axis(smb.expand_dims(dims))
+    elif not hasattr(ax, "_plotvol"):
+        ax.autoscale(enable=True, axis="both")
+
+    # create unit vectors in homogeneous form
+    o = T @ np.array([0, 0, 1])
+    x = T @ np.array([length, 0, 1])
+    y = T @ np.array([0, length, 1])
+
+    # draw the axes
+
+    if rviz:
+        ax.plot([o[0], x[0]], [o[1], x[1]], color="red", linewidth=5 * width)
+        ax.plot([o[0], y[0]], [o[1], y[1]], color="lime", linewidth=5 * width)
+    elif arrow:
+        ax.quiver(
+            o[0],
+            o[1],
+            x[0] - o[0],
+            x[1] - o[1],
+            angles="xy",
+            scale_units="xy",
+            scale=1,
+            linewidth=width,
+            facecolor=color,
+            edgecolor=color,
+        )
+        ax.quiver(
+            o[0],
+            o[1],
+            y[0] - o[0],
+            y[1] - o[1],
+            angles="xy",
+            scale_units="xy",
+            scale=1,
+            linewidth=width,
+            facecolor=color,
+            edgecolor=color,
+        )
+    else:
+        ax.plot([o[0], x[0]], [o[1], x[1]], color=color, linewidth=width)
+        ax.plot([o[0], y[0]], [o[1], y[1]], color=color, linewidth=width)
+
+    if originsize > 0:
+        ax.scatter(x=[o[0], x[0], y[0]], y=[o[1], x[1], y[1]], s=[originsize, 0, 0])
+
+    # label the frame
+    if frame:
+        if textcolor is not None:
+            color = textcolor
+
+        o1 = T @ np.array([-d1, -d1, 1])
+        ax.text(
+            o1[0],
+            o1[1],
+            r"$\{" + frame + r"\}$",
+            color=color,
+            verticalalignment="top",
+            horizontalalignment="left",
+        )
+
+    if axislabel:
+        if textcolor is not None:
+            color = textcolor
+        # add the labels to each axis
+        x = (x - o) * d2 + o
+        y = (y - o) * d2 + o
+
+        if frame is None or not axissubscript:
+            format = "${:s}$"
+        else:
+            format = "${:s}_{{{:s}}}$"
+
+        ax.text(
+            x[0],
+            x[1],
+            format.format(labels[0], frame),
+            color=color,
+            horizontalalignment="center",
+            verticalalignment="center",
+        )
+        ax.text(
+            y[0],
+            y[1],
+            format.format(labels[1], frame),
+            color=color,
+            horizontalalignment="center",
+            verticalalignment="center",
+        )
+
+    if block is not None:
+        # calling this at all, causes FuncAnimation to fail so when invoked from tranimate2 skip this bit
+        plt.show(block=block)
+    return ax
+
+
+def tranimate2(T: SO2Array | SE2Array, **kwargs):
+    """
+    Animate a 2D coordinate frame
+
+    :param T: an SE(2) or SO(2) pose to be displayed as coordinate frame
+    :type: ndarray(3,3) or ndarray(2,2)
+    :param nframes: number of steps in the animation [defaault 100]
+    :type nframes: int
+    :param repeat: animate in endless loop [default False]
+    :type repeat: bool
+    :param interval: number of milliseconds between frames [default 50]
+    :type interval: int
+    :param movie: name of file to write MP4 movie into
+    :type movie: str
+
+    Animates a 2D coordinate frame moving from the world frame to a frame represented by the SO(2) or SE(2) matrix to the current axes.
+
+    - If no current figure, one is created
+    - If current figure, but no axes, a 3d Axes is created
+
+
+    Examples:
+
+            tranimate2(transl(1,2)@trot2(1), frame='A', arrow=False, dims=[0, 5])
+            tranimate2(transl(1,2)@trot2(1), frame='A', arrow=False, dims=[0, 5], movie='spin.mp4')
+    """
+    dims = kwargs.pop("dims", None)
+    ax = kwargs.pop("ax", None)
+    anim = smb.animate.Animate2(dims=dims, axes=ax, **kwargs)
+    anim.trplot2(T, **kwargs)
+    return anim.run(**kwargs)
 
 
 if __name__ == "__main__":  # pragma: no cover

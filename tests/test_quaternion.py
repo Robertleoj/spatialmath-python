@@ -3,13 +3,11 @@ from math import pi
 import numpy.testing as nt
 import unittest
 
-from spatialmath import Quaternion, UnitQuaternion
+from spatialmath import Quaternion, UnitQuaternion, SO3, SE3
 from spatialmath.base import (
     rotx,
     roty,
     rotz,
-    SO3,
-    SE3,
     rpy2r,
     eul2r,
     angvec2r,

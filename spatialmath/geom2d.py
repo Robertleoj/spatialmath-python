@@ -21,21 +21,15 @@ import spatialmath.base as smb
 from spatialmath.base import plot_ellipse
 from spatialmath.base.types import (
     Points2,
-    Optional,
     ArrayLike,
     ArrayLike2,
     ArrayLike3,
     NDArray,
-    Union,
-    List,
     R2,
     R3,
     R4,
-    Iterator,
-    Tuple,
-    Self,
-    cast,
 )
+from typing import Self
 
 _eps = np.finfo(np.float64).eps
 
@@ -223,7 +217,7 @@ class Polygon2:
         intersections.
     """
 
-    def __init__(self, vertices: Optional[Points2] = None, close: bool = True):
+    def __init__(self, vertices: Points2 | None = None, close: bool = True):
         """
         Create planar polygon from vertices
 
@@ -412,7 +406,7 @@ class Polygon2:
         """
         return np.r_[self.moment(1, 0), self.moment(0, 1)] / self.moment(0, 0)
 
-    def plot(self, ax: Optional[plt.Axes] = None, **kwargs) -> None:
+    def plot(self, ax: plt.Axes | None = None, **kwargs) -> None:
         """
         Plot polygon
 
@@ -680,10 +674,10 @@ class Polygon2:
 class Ellipse:
     def __init__(
         self,
-        radii: Optional[ArrayLike2] = None,
-        E: Optional[NDArray] = None,
+        radii: ArrayLike2 | None = None,
+        E: NDArray | None = None,
         centre: ArrayLike2 = (0, 0),
-        theta: Optional[float] = None,
+        theta: float | None = None,
     ):
         r"""
         Create an ellipse
@@ -727,6 +721,8 @@ class Ellipse:
                 raise ValueError("determinant of E must be > 0 for an ellipse")
             self._E = E
         elif radii is not None:
+            if theta is None:
+                raise ValueError("theta must be specified if radii are given")
             M = np.array(
                 [[np.cos(theta), np.sin(theta)], [np.sin(theta), -np.cos(theta)]]
             )
@@ -737,7 +733,7 @@ class Ellipse:
         self._centre = centre
 
     @classmethod
-    def Polynomial(cls, e: ArrayLike, p: Optional[ArrayLike2] = None) -> Self:
+    def Polynomial(cls, e: ArrayLike, p: ArrayLike2 | None = None) -> Self:
         r"""
         Create an ellipse from polynomial
 

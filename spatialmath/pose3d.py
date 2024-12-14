@@ -22,10 +22,10 @@ from spatialmath.base.types import (
 from spatialmath.base.vectors import orthogonalize
 from spatialmath.baseposematrix import BasePoseMatrix
 from spatialmath.pose2d import SE2
+from spatialmath.base.argcheck import getmatrix
 
 from spatialmath.twist import Twist3
-
-from spatialmath.quaternion import UnitQuaternion
+import spatialmath.quaternion as quat
 
 # ============================== SO3 =====================================#
 
@@ -536,7 +536,7 @@ class SO3(BasePoseMatrix):
     def RPY(cls, *angles: ArrayLike3 | RNx3, unit: str = "rad", order="zyx") -> SO3: ...
 
     @classmethod
-    def RPY(cls, *angles, unit="rad", order="zyx"):
+    def RPY(cls, *angles, unit: str = "rad", order: str = "zyx") -> SO3:
         r"""
         Construct a new SO(3) from roll-pitch-yaw angles
 
@@ -656,7 +656,7 @@ class SO3(BasePoseMatrix):
             >>> SO3.TwoVectors(x='-z', z='x')
         """
 
-        def vval(v):
+        def vval(v) -> ArrayLike3:
             if isinstance(v, str):
                 sign = 1
                 if v[0] == "-":
@@ -826,7 +826,7 @@ class SO3(BasePoseMatrix):
         else:
             return cls(smb.trexp(cast(R3, S), check=check), check=False)
 
-    def UnitQuaternion(self) -> UnitQuaternion:
+    def UnitQuaternion(self) -> quat.UnitQuaternion:
         """
         SO3 as a unit quaternion instance
 
@@ -844,10 +844,8 @@ class SO3(BasePoseMatrix):
             >>> SO3.Rz(0.3).UnitQuaternion()
 
         """
-        # Function level import to avoid circular dependencies
-        from spatialmath import UnitQuaternion
 
-        return UnitQuaternion(smb.r2q(self.R), check=False)
+        return quat.UnitQuaternion(smb.r2q(self.R), check=False)
 
     def angdist(self, other: SO3, metric: int = 6) -> float | NDArray:
         r"""
@@ -1863,7 +1861,7 @@ class SE3(SO3):
         """
         if y is None and z is None:
             # single passed value, assume is 3-vector or Nx3
-            t = smb.getmatrix(x, (None, 3))
+            t = getmatrix(x, (None, 3))
             return cls([smb.transl(_t) for _t in t], check=False)
         else:
             return cls(np.array([x, y, z]))

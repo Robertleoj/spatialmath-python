@@ -205,8 +205,6 @@ try:
         :seealso: :func:`plot_text`
         """
 
-        defaults = {"horizontalalignment": "left", "verticalalignment": "center"}
-
         if isinstance(pos, np.ndarray):
             if pos.ndim == 1:
                 x = pos[0]
@@ -593,11 +591,10 @@ try:
         if label is not None:
             # add a label
             label_pos = label_pos.split(":")
-            if label_pos[0] == "below":
-                above = False
+
             try:
                 fraction = float(label_pos[1])
-            except:
+            except ValueError:
                 fraction = 0.5
 
             theta = np.arctan2(dy, dx)
@@ -1040,14 +1037,6 @@ try:
 
         if E.shape != (3, 3):
             raise ValueError("ellipsoid is defined by a 3x3 matrix")
-
-        if confidence:
-            # process the probability
-            from scipy.stats.distributions import chi2
-
-            s = math.sqrt(chi2.ppf(confidence, df=3)) * scale
-        else:
-            s = scale
 
         if not inverted:
             E = np.linalg.inv(E)
@@ -1751,6 +1740,8 @@ try:
             is-executed-in-the-ipython-notebook/39662359#39662359
         """
         try:
+            from IPython import get_ipython  # type: ignore
+
             shell = get_ipython().__class__.__name__
             if shell == "ZMQInteractiveShell":
                 return True  # Jupyter notebook or qtconsole
@@ -1794,9 +1785,6 @@ except ImportError:  # pragma: no cover
         raise NotImplementedError("Matplotlib is not installed: pip install matplotlib")
 
     def plot_ellipsoid(*args, **kwargs) -> None:
-        raise NotImplementedError("Matplotlib is not installed: pip install matplotlib")
-
-    def plot_text(*args, **kwargs) -> None:
         raise NotImplementedError("Matplotlib is not installed: pip install matplotlib")
 
     def plot_cuboid(*args, **kwargs) -> None:

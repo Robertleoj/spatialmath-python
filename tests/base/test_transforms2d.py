@@ -38,7 +38,7 @@ from spatialmath.base.transforms2d import (
     trinterp2,
     trplot2,
 )
-from spatialmath.base import smb
+# from spatialmath.base import smb
 from spatialmath.base.transformsNd import (
     isR,
     t2r,
@@ -151,7 +151,7 @@ class Test2D(unittest.TestCase):
     def test_tr2jac2(self):
         T = trot2(0.3, t=[4, 5])
         jac2 = tr2jac2(T)
-        nt.assert_array_almost_equal(jac2[:2, :2], smb.t2r(T))
+        nt.assert_array_almost_equal(jac2[:2, :2], t2r(T))
         nt.assert_array_almost_equal(jac2[:3, 2], np.array([0, 0, 1]))
         nt.assert_array_almost_equal(jac2[2, :3], np.array([0, 0, 1]))
 

@@ -1,23 +1,27 @@
-# Part of Spatial Math Toolbox for Python
-# Copyright (c) 2000 Peter Corke
-# MIT Licence, see details in top-level file: LICENCE
-
 """
 These functions create and manipulate quaternions or unit quaternions.
 The quaternion is represented
 by a 1D NumPy array with 4 elements: s, x, y, z.
-
 """
-# pylint: disable=invalid-name
 
 import sys
 import math
 import numpy as np
 import spatialmath.base as smb
 from spatialmath.base.argcheck import getunit
-from spatialmath.base.types import *
+from spatialmath.base.types import (
+    QuaternionArray,
+    ArrayLike3,
+    ArrayLike4,
+    UnitQuaternionArray,
+    R3,
+    SO3Array,
+    ArrayLike,
+    ArrayLike2,
+    R4x4,
+)
 import scipy.interpolate as interpolate
-from typing import Optional
+from typing import overload, TextIO
 from functools import lru_cache
 
 _eps = np.finfo(np.float64).eps
@@ -179,7 +183,7 @@ def qisequal(
     q1: ArrayLike4,
     q2: ArrayLike4,
     tol: float = 20,
-    unitq: Optional[bool] = False,
+    unitq: bool = False,
 ) -> bool: ...
 
 
@@ -188,11 +192,11 @@ def qisequal(
     q1: ArrayLike4,
     q2: ArrayLike4,
     tol: float = 20,
-    unitq: Optional[bool] = True,
+    unitq: bool = False,
 ) -> bool: ...
 
 
-def qisequal(q1, q2, tol: float = 20, unitq: Optional[bool] = False):
+def qisequal(q1, q2, tol: float = 20, unitq: bool = False):
     """
     Test if quaternions are equal
 
@@ -502,9 +506,7 @@ def qconj(q: ArrayLike4) -> QuaternionArray:
     return np.r_[q[0], -q[1:4]]
 
 
-def q2r(
-    q: Union[UnitQuaternionArray, ArrayLike4], order: Optional[str] = "sxyz"
-) -> SO3Array:
+def q2r(q: UnitQuaternionArray | ArrayLike4, order: str = "sxyz") -> SO3Array:
     """
     Convert unit-quaternion to SO(3) rotation matrix
 
@@ -548,9 +550,9 @@ def q2r(
 
 def r2q(
     R: SO3Array,
-    check: Optional[bool] = False,
+    check: bool = False,
     tol: float = 20,
-    order: Optional[str] = "sxyz",
+    order: str = "sxyz",
     shortest: bool = False,
 ) -> UnitQuaternionArray:
     """
@@ -772,7 +774,7 @@ def qslerp(
     q0: ArrayLike4,
     q1: ArrayLike4,
     s: float,
-    shortest: Optional[bool] = False,
+    shortest: bool = False,
     tol: float = 20,
 ) -> UnitQuaternionArray:
     """
@@ -909,7 +911,7 @@ def _compute_inv_cdf_sin_squared(
 
 
 def qrand(
-    theta_range: Optional[ArrayLike2] = None,
+    theta_range: ArrayLike2 | None = None,
     unit: str = "rad",
     num_interpolation_points: int = 256,
 ) -> UnitQuaternionArray:
@@ -1111,10 +1113,10 @@ def qangle(q1: ArrayLike4, q2: ArrayLike4) -> float:
 
 
 def qprint(
-    q: Union[ArrayLike4, ArrayLike4],
-    delim: Optional[Tuple[str, str]] = ("<", ">"),
-    fmt: Optional[str] = "{: .4f}",
-    file: Optional[TextIO] = sys.stdout,
+    q: ArrayLike4 | ArrayLike4,
+    delim: tuple[str, str] = ("<", ">"),
+    fmt: str = "{: .4f}",
+    file: TextIO = sys.stdout,
 ) -> str:
     """
     Format a quaternion

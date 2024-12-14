@@ -1,8 +1,9 @@
 from __future__ import annotations
 import numpy as np
-from spatialmath import Quaternion, UnitQuaternion, SE3
+from spatialmath import Quaternion, UnitQuaternion
 from spatialmath import base
-from spatialmath.base.types import *
+from spatialmath.base.types import ArrayLike3, R8x8, R8
+from typing import Self, overload
 
 # TODO scalar multiplication
 
@@ -97,7 +98,7 @@ class DualQuaternion:
         """
         return str(self.real) + " + ε " + str(self.dual)
 
-    def norm(self) -> Tuple[float, float]:
+    def norm(self) -> tuple[float, float]:
         """
         Norm of a dual quaternion
 
@@ -269,6 +270,7 @@ class UnitDualQuaternion(DualQuaternion):
     @overload
     def __init__(self, T: SE3): ...
 
+    @overload
     def __init__(self, real: Quaternion, dual: Quaternion): ...
 
     def __init__(self, real=None, dual=None):
