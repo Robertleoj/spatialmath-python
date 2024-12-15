@@ -21,8 +21,9 @@ from spatialmath.base.types import (
     R4x4,
 )
 import scipy.interpolate as interpolate
-from typing import overload, TextIO
+from typing import overload, TextIO, cast
 from functools import lru_cache
+
 
 _eps = np.finfo(np.float64).eps
 
@@ -80,10 +81,12 @@ def qpositive(q: ArrayLike4) -> QuaternionArray:
 
     If the scalar part is negative return -q.
     """
+    q = np.array(q)
+
     if q[0] < 0:
-        return -q
+        return cast(QuaternionArray, -q)
     else:
-        return q
+        return cast(QuaternionArray, q)
 
 
 def qnorm(q: ArrayLike4) -> float:
@@ -431,6 +434,10 @@ def vvmul(qa: ArrayLike3, qb: ArrayLike3) -> R3:
 
     :seealso: :func:`q2v` :func:`v2q` :func:`qvmul`
     """
+
+    qa = smb.getvector(qa, 3)
+    qb = smb.getvector(qb, 3)
+
     t6 = math.sqrt(1.0 - np.sum(qa**2))
     t11 = math.sqrt(1.0 - np.sum(qb**2))
     return np.r_[
@@ -847,7 +854,7 @@ def qslerp(
         return q0
 
 
-def _compute_cdf_sin_squared(theta: float):
+def _compute_cdf_sin_squared(theta: ArrayLike) -> ArrayLike:
     """
     Computes the CDF for the distribution of angular magnitude for uniformly sampled rotations.
 
@@ -938,7 +945,7 @@ def qrand(
         >>> qprint(qrand())
     """
     if theta_range is not None:
-        theta_range = getunit(theta_range, unit)
+        theta_range = cast(ArrayLike2, getunit(theta_range, unit))
 
         if (
             theta_range[0] < 0
@@ -955,13 +962,13 @@ def qrand(
 
         # Sample angle using inverse transform sampling based on CDF
         # of the angular distribution (2/pi * sin^2(theta/2))
-        theta = _compute_inv_cdf_sin_squared(
+        theta = cast(np.floating, _compute_inv_cdf_sin_squared(
             np.random.uniform(
                 low=_compute_cdf_sin_squared(theta_range[0]),
                 high=_compute_cdf_sin_squared(theta_range[1]),
             ),
             num_interpolation_points=num_interpolation_points,
-        )
+        ))
         # Sample axis uniformly using 3D normal distributed
         v = np.random.randn(3)
         v /= np.linalg.norm(v)

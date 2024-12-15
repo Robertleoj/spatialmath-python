@@ -13,6 +13,7 @@ from spatialmath.base.symbolic import issymbol, symtype
 from typing import Any, cast, overload, Callable
 
 
+
 # valid scalar types
 _scalartypes = (int, np.integer, float, np.floating) + symtype
 
@@ -271,7 +272,7 @@ def getvector(
     v: ArrayLike,
     dim: int | None = None,
     out: str = "array",
-    dtype: np.dtype = np.float64,
+    dtype: type = np.float64,
 ) -> NDArray: ...
 
 
@@ -280,7 +281,7 @@ def getvector(
     v: ArrayLike,
     dim: int | None = None,
     out: str = "list",
-    dtype: np.dtype = np.float64,
+    dtype: type = np.float64,
 ) -> list[float]: ...
 
 
@@ -289,7 +290,7 @@ def getvector(
     v: tuple[float, ...],
     dim: int | None = None,
     out: str = "sequence",
-    dtype: np.dtype = np.float64,
+    dtype: type = np.float64,
 ) -> tuple[float, ...]: ...
 
 
@@ -298,7 +299,7 @@ def getvector(
     v: list[float],
     dim: int | None = None,
     out: str = "sequence",
-    dtype: np.dtype = np.float64,
+    dtype: type = np.float64,
 ) -> list[float]: ...
 
 
@@ -306,7 +307,7 @@ def getvector(
     v: ArrayLike,
     dim: int | None = None,
     out: str = "array",
-    dtype: np.dtype = np.float64,
+    dtype: type = np.float64,
 ) -> NDArray | list[float] | tuple[float, ...]:
     """
     Return a vector value
@@ -543,6 +544,7 @@ def getunit(v: ArrayLike, unit: str = "rad", dim=None) -> float | NDArray:
     :seealso: :func:`getvector`
     """
     if not isinstance(v, Iterable) and dim == 0:
+
         # scalar in, scalar out
         if unit == "rad":
             return v

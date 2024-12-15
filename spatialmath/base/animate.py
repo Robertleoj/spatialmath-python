@@ -3,6 +3,7 @@ import os.path
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import animation
+from matplotlib.axes import Axes
 import spatialmath.base as smb
 from collections.abc import Iterable, Iterator
 from spatialmath.base.types import ArrayLike, SO3Array, SE3Array, SO2Array, SE2Array
@@ -39,7 +40,7 @@ class Animate:
 
     def __init__(
         self,
-        ax: plt.Axes | None = None,
+        ax: Axes | None = None,
         dim: ArrayLike | None = None,
         projection: str = "ortho",
         labels: tuple[str, str, str] = ("X", "Y", "Z"),
