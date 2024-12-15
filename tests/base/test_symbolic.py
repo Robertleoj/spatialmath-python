@@ -18,7 +18,7 @@ from spatialmath.base.symbolic import (
 
 class Test_symbolic(unittest.TestCase):
     def test_symbol(self):
-        theta = sp.symbols("theta")
+        theta = sp.symbols("theta", real=True)
         self.assertTrue(isinstance(theta, sp.Expr))
         self.assertTrue(theta.is_real)
 
@@ -26,29 +26,29 @@ class Test_symbolic(unittest.TestCase):
         self.assertTrue(isinstance(theta, sp.Expr))
         self.assertFalse(theta.is_real)
 
-        theta, psi = sp.symbols("theta, psi")
+        theta, psi = sp.symbols("theta, psi", real=True)
         self.assertTrue(isinstance(theta, sp.Expr))
         self.assertTrue(isinstance(psi, sp.Expr))
 
-        theta, psi = sp.symbols("theta psi")
+        theta, psi = sp.symbols("theta psi", real=True)
         self.assertTrue(isinstance(theta, sp.Expr))
         self.assertTrue(isinstance(psi, sp.Expr))
 
-        q = sp.symbols("q:6")
+        q = sp.symbols("q:6", real=True)
         self.assertEqual(len(q), 6)
         for _ in q:
             self.assertTrue(isinstance(_, sp.Expr))
             self.assertTrue(_.is_real)
 
     def test_issymbol(self):
-        theta = sp.symbols("theta")
+        theta = sp.symbols("theta", real=True)
         self.assertFalse(issymbol(3))
         self.assertFalse(issymbol("not a symbol"))
         self.assertFalse(issymbol([1, 2]))
         self.assertTrue(issymbol(theta))
 
     def test_functions(self):
-        theta = sp.symbols("theta")
+        theta = sp.symbols("theta", real=True)
         self.assertTrue(isinstance(sin(theta), sp.Expr))
         self.assertTrue(isinstance(sin(1.0), float))
 

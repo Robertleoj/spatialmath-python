@@ -52,8 +52,8 @@ def rot2(theta: float, unit: str = "rad") -> SO2Array:
         >>> rot2(45, 'deg')
     """
     theta = smb.getunit(theta, unit, dim=0)
-    ct = smb.sym.cos(theta)
-    st = smb.sym.sin(theta)
+    ct = smb.symbolic.cos(theta)
+    st = smb.symbolic.sin(theta)
     # fmt: off
     R = np.array([
         [ct, -st],

@@ -60,6 +60,7 @@ class SplineSE3(ABC):
             )  # plot compare to input poses
 
         if animate:
+            print("Before animate")
             tranimate(
                 samples, length=pose_marker_length, wait=True, repeat=repeat
             )  # animate pose along trajectory

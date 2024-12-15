@@ -51,7 +51,7 @@ class Quaternion(BasePoseList):
        :parts: 1
     """
 
-    def __init__(self, s: Any = None, v=None) -> None:
+    def __init__(self, s: Any = None, v=None, check: bool = True) -> None:
         r"""
         Construct a new quaternion
 
@@ -59,7 +59,7 @@ class Quaternion(BasePoseList):
         :type s: float
         :param v: vector
         :type v: 3-element array_like
-
+        :param check: does nothing, for compatibility with other classes
         - ``Quaternion()`` constructs a zero quaternion
         - ``Quaternion(s, v)`` construct a new quaternion from the scalar ``s``
           and the vector ``v``

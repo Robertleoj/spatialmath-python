@@ -12,6 +12,7 @@
 # from spatialmath.base.animate import *  # lgtm [py/polluting-import]
 # from spatialmath.base.graphics import *  # lgtm [py/polluting-import]
 # from spatialmath.base.numeric import *  # lgtm [py/polluting-import]
+import spatialmath.base.symbolic as symbolic
 
 
 from spatialmath.base.graphics import (
@@ -56,6 +57,7 @@ from spatialmath.base.argcheck import (
 from spatialmath.base.quaternions import (
     qpure,
     qnorm,
+    qeye,
     qunit,
     qisunit,
     qisequal,
@@ -135,6 +137,7 @@ from spatialmath.base.transforms3d import (
     trprint,
     trplot,
     tranimate,
+    tr2adjoint,
 )
 from spatialmath.base.transformsNd import (
     t2r,
@@ -167,6 +170,7 @@ from spatialmath.base.vectors import (
     unittwist,
     unittwist_norm,
     unittwist2,
+    unittwist2_norm,
     angdiff,
     removesmall,
     cross,
@@ -175,7 +179,13 @@ from spatialmath.base.vectors import (
     wrap_mpi_pi,
 )
 
-# from spatialmath.base.symbolic import *
+from spatialmath.base.symbolic import (
+    sqrt,
+    sin,
+    cos,
+    tan,
+)
+
 # from spatialmath.base.animate import Animate, Animate2
 # from spatialmath.base.graphics import (
 #     plotvol2,
@@ -200,7 +210,7 @@ from spatialmath.base.vectors import (
 #     axes_logic,
 #     isnotebook,
 # )
-from spatialmath.base.numeric import numjac, array2str, bresenham, numhess
+from spatialmath.base.numeric import numjac, array2str, bresenham, numhess, mpq_point
 
 
 __all__ = [
@@ -219,6 +229,7 @@ __all__ = [
     # spatialmath.base.quaternions
     "qpure",
     "qnorm",
+    "qeye",
     "qunit",
     "qisunit",
     "qisequal",
@@ -335,6 +346,7 @@ __all__ = [
     "unittwist",
     "unittwist_norm",
     "unittwist2",
+    "unittwist2_norm",
     "angdiff",
     "removesmall",
     "cross",
@@ -342,6 +354,11 @@ __all__ = [
     "wrap_0_2pi",
     "wrap_mpi_pi",
     "wrap_0_pi",
+    # spatialmath.base.symbolic
+    "sqrt",
+    "sin",
+    "cos",
+    "tan",
     # spatialmath.base.animate
     "Animate",
     "Animate2",
@@ -378,4 +395,6 @@ __all__ = [
     "mpq_point",
     "gauss1d",
     "gauss2d",
+    # modules
+    "symbolic",
 ]

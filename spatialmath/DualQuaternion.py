@@ -2,6 +2,7 @@ from __future__ import annotations
 import numpy as np
 from spatialmath import Quaternion, UnitQuaternion
 from spatialmath import base
+import spatialmath.pose3d as pose3d
 from spatialmath.base.types import ArrayLike3, R8x8, R8
 from typing import Self, overload
 
@@ -31,7 +32,9 @@ class DualQuaternion:
     :seealso: :func:`UnitDualQuaternion`
     """
 
-    def __init__(self, real: Quaternion = None, dual: Quaternion = None):
+    def __init__(
+        self, real: Quaternion | None = None, dual: Quaternion | None = None
+    ) -> None:
         """
         Construct a new dual quaternion
 
@@ -268,7 +271,7 @@ class UnitDualQuaternion(DualQuaternion):
     """
 
     @overload
-    def __init__(self, T: SE3): ...
+    def __init__(self, T: pose3d.SE3): ...
 
     @overload
     def __init__(self, real: Quaternion, dual: Quaternion): ...
@@ -313,7 +316,7 @@ class UnitDualQuaternion(DualQuaternion):
         :math:`t`.
         """
 
-        if dual is None and isinstance(real, SE3):
+        if dual is None and isinstance(real, pose3d.SE3):
             T = real
             S = UnitQuaternion(T.R)
             D = Quaternion.Pure(T.t)
@@ -323,7 +326,7 @@ class UnitDualQuaternion(DualQuaternion):
 
         super().__init__(real, dual)
 
-    def SE3(self) -> SE3:
+    def SE3(self) -> pose3d.SE3:
         """
         Convert unit dual quaternion to SE(3) matrix
 
@@ -344,18 +347,8 @@ class UnitDualQuaternion(DualQuaternion):
         R = base.q2r(self.real.A)
         t = 2 * self.dual * self.real.conj()
 
-        return SE3(base.rt2tr(R, t.v))
-
-    # def exp(self):
-    #     w = self.real.v
-    #     v = self.dual.v
-    #     theta = base.norm(w)
+        return pose3d.SE3(base.rt2tr(R, t.v))
 
 
-if __name__ == "__main__":  # pragma: no cover
-    from spatialmath import SE3, UnitDualQuaternion
-
-    print(UnitDualQuaternion(SE3()))
-    # import pathlib
-
-    # exec(open(pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_dualquaternion.py").read())  # pylint: disable=exec-used
+if __name__ == "__main__":
+    print(UnitDualQuaternion(pose3d.SE3()))

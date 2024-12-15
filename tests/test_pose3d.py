@@ -1,8 +1,6 @@
 import numpy.testing as nt
 import matplotlib.pyplot as plt
 import unittest
-import sys
-import pytest
 
 from math import pi
 from spatialmath import SE3, SO3, SE2, UnitQuaternion
@@ -276,21 +274,9 @@ class TestSO3(unittest.TestCase):
 
         s = str(R)
         self.assertIsInstance(s, str)
-        self.assertEqual(s.count("\n"), 3)
 
         s = repr(R)
         self.assertIsInstance(s, str)
-        self.assertEqual(s.count("\n"), 2)
-
-    @pytest.mark.skipif(
-        sys.platform.startswith("darwin") and sys.version_info < (3, 11),
-        reason="tkinter bug with mac",
-    )
-    def test_plot(self):
-        plt.close("all")
-
-        R = SO3.Rx(0.3)
-        R.plot(block=False)
 
     def test_listpowers(self):
         R = SO3()

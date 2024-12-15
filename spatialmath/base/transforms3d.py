@@ -740,9 +740,10 @@ def angvec2r(theta: float, v: ArrayLike3, unit="rad", tol: float = 20) -> SO3Arr
         return np.eye(3)
 
     θ = getunit(theta, unit)
+    if isinstance(θ, np.ndarray):
+        θ = float(θ.squeeze())
 
     # Rodrigue's equation
-
     sk = skew(cast(ArrayLike3, unitvec(v)))
     R = np.eye(3) + math.sin(θ) * sk + (1.0 - math.cos(θ)) * sk @ sk
     return R

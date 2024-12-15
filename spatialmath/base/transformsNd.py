@@ -13,10 +13,7 @@ from spatialmath.base.types import (
     ArrayLike3,
     se2Array,
     se3Array,
-    so2Array,
-    so3Array,
     senArray,
-    R1,
     R6,
     ArrayLike6,
 )
@@ -518,11 +515,11 @@ def skew(v):
 
 # ---------------------------------------------------------------------------------------#
 @overload
-def vex(s: so2Array, check: bool = False) -> R1: ...
+def vex(s: se2Array, check: bool = False) -> R2: ...
 
 
 @overload
-def vex(s: so3Array, check: bool = False) -> R3: ...
+def vex(s: se3Array, check: bool = False) -> R3: ...
 
 
 def vex(s, check=False):

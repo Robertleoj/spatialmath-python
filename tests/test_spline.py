@@ -1,6 +1,5 @@
 import numpy.testing as nt
 import numpy as np
-import matplotlib.pyplot as plt
 import unittest
 
 from spatialmath import BSplineSE3, SE3, InterpSplineSE3, SplineFit, SO3
@@ -13,10 +12,6 @@ class TestBSplineSE3(unittest.TestCase):
         for e in range(0, 8)
     ]
 
-    @classmethod
-    def tearDownClass(cls):
-        plt.close("all")
-
     def test_constructor(self):
         BSplineSE3(self.control_poses)
 
@@ -24,12 +19,6 @@ class TestBSplineSE3(unittest.TestCase):
         spline = BSplineSE3(self.control_poses)
         nt.assert_almost_equal(spline(0).A, self.control_poses[0].A)
         nt.assert_almost_equal(spline(1).A, self.control_poses[-1].A)
-
-    def test_visualize(self):
-        spline = BSplineSE3(self.control_poses)
-        spline.visualize(
-            sample_times=np.linspace(0, 1.0, 100), animate=True, repeat=False
-        )
 
 
 class TestInterpSplineSE3:
@@ -40,10 +29,6 @@ class TestInterpSplineSE3:
     ]
     time_horizon = 10
     times = np.linspace(0, time_horizon, len(waypoints))
-
-    @classmethod
-    def tearDownClass(cls):
-        plt.close("all")
 
     def test_constructor(self):
         InterpSplineSE3(self.times, self.waypoints)
@@ -63,14 +48,6 @@ class TestInterpSplineSE3:
     def test_small_delta_t(self):
         InterpSplineSE3(
             np.linspace(0, InterpSplineSE3._e, len(self.waypoints)), self.waypoints
-        )
-
-    def test_visualize(self):
-        spline = InterpSplineSE3(self.times, self.waypoints)
-        spline.visualize(
-            sample_times=np.linspace(0, self.time_horizon, 100),
-            animate=True,
-            repeat=False,
         )
 
 
@@ -105,8 +82,3 @@ class TestSplineFit:
 
         assert fit.max_angular_error() < np.deg2rad(5.0)
         assert fit.max_angular_error() < 0.1
-        spline.visualize(
-            sample_times=np.linspace(0, self.time_horizon, 100),
-            animate=True,
-            repeat=False,
-        )

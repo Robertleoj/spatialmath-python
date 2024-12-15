@@ -61,7 +61,6 @@ __all__ = [
     "SO2Array",
     "SE2Array",
     "SE3Array",
-
     "R8x8",
     "R3x3",
     "RNx3",

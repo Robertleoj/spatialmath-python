@@ -29,7 +29,7 @@ from spatialmath.base.types import (
     R3,
     R4,
 )
-from typing import Self
+from typing import Self, Iterator, cast
 
 _eps = np.finfo(np.float64).eps
 
@@ -93,7 +93,7 @@ class Line2:
         """
         return cls([m, -1, c])
 
-    def general(self) -> Tuple[float, float]:
+    def general(self) -> tuple[float, float]:
         r"""
         Parameters of general line
 
@@ -480,7 +480,7 @@ class Polygon2:
         self.patch = PathPatch(self.path, **self.kwargs)
         self.ax.add_patch(self.patch)
 
-    def contains(self, p: ArrayLike2, radius: float = 0.0) -> Union[bool, List[bool]]:
+    def contains(self, p: ArrayLike2, radius: float = 0.0) -> bool | list[bool]:
         """
         Test if point is inside polygon
 
@@ -564,7 +564,7 @@ class Polygon2:
         return dmax
 
     def intersects(
-        self, other: Union[Polygon2, Line2, List[Polygon2], List[Line2]]
+        self, other: Polygon2 | Line2 | list[Polygon2] | list[Line2]
     ) -> bool:
         """
         Test for intersection
@@ -590,12 +590,12 @@ class Polygon2:
                     return True
             return False
         elif smb.islistof(other, Polygon2):
-            for polygon in cast(List[Polygon2], other):
+            for polygon in cast(list[Polygon2], other):
                 if self.path.intersects_path(polygon.path, filled=True):
                     return True
             return False
         elif smb.islistof(other, Line2):
-            for line in cast(List[Line2], other):
+            for line in cast(list[Line2], other):
                 for p1, p2 in self.edges():
                     # test each edge segment against the line
                     if line.intersect_segment(p1, p2):
@@ -960,7 +960,7 @@ class Ellipse:
         """
         e, x = np.linalg.eigh(self.E)
         # major axis is second column
-        return np.arctan(x[1, 1] / x[0, 1])
+        return np.atan2(x[1, 1], x[0, 1]) % (np.pi)
 
     @property
     def area(self) -> float:

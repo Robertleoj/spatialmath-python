@@ -100,7 +100,7 @@ class TestVector(unittest.TestCase):
         self.assertAlmostEqual(normsq(np.r_[1, 2, 3]), 14)
 
     def test_norm_sym(self):
-        x, y = sp.symbols("x y")
+        x, y = sp.symbols("x y", real=True)
         v = [x, y]
         self.assertEqual(norm(v), sqrt(x**2 + y**2))
         self.assertEqual(norm(np.r_[v]), sqrt(x**2 + y**2))

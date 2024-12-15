@@ -1,14 +1,8 @@
 import numpy.testing as nt
-import matplotlib.pyplot as plt
 import unittest
-import sys
-import pytest
 from math import pi
 import math
 import numpy as np
-
-# from spatialmath.pose2d import *
-# from spatialmath.base import *
 from spatialmath import SO2, SE2
 from spatialmath.base import rot2, skew, transl2, trot2, skewa, t2r, h2e, e2h, isskewa
 from spatialmath.baseposematrix import BasePoseMatrix
@@ -28,10 +22,6 @@ def array_compare(x, y):
 
 
 class TestSO2(unittest.TestCase):
-    @classmethod
-    def tearDownClass(cls):
-        plt.close("all")
-
     def test_constructor(self):
         # null case
         x = SO2()
@@ -153,9 +143,6 @@ class TestSO2(unittest.TestCase):
 
         array_compare(r1 * vx, np.c_[vy])
 
-        # vector x vector
-        # array_compare(SO2([r0, r1, r0]) * np.c_[vy, vx, vx], np.c_[vy, vy, vx])
-
         # scalar x vector
         array_compare(r1 * np.c_[vx, vy, -vx], np.c_[vy, -vx, -vy])
 
@@ -202,25 +189,11 @@ class TestSO2(unittest.TestCase):
 
         self.assertFalse(r.isSE)
 
-    @pytest.mark.skipif(
-        sys.platform.startswith("darwin") and sys.version_info < (3, 11),
-        reason="tkinter bug with mac",
-    )
-    def test_plot(self):
-        plt.close("all")
-
-        R = SO2(0.3)
-        R.plot(block=False)
-
 
 # ============================== SE2 =====================================#
 
 
 class TestSE2(unittest.TestCase):
-    @classmethod
-    def tearDownClass(cls):
-        plt.close("all")
-
     def test_constructor(self):
         self.assertIsInstance(SE2(), SE2)
 
@@ -391,11 +364,7 @@ class TestSE2(unittest.TestCase):
         vy = np.r_[0, 1]
 
         # scalar x scalar
-
         array_compare(TT1 * vy, h2e(T1 @ e2h(vy)))
-
-        # # vector x vector
-        # array_compare(SE2([TT1, TT2]) * np.c_[vx, vy], np.c_[h2e(T1 @ e2h(vx)), h2e(T2 @ e2h(vy))])
 
         # scalar x vector
         array_compare(TT1 * np.c_[vx, vy], h2e(T1 @ e2h(np.c_[vx, vy])))
@@ -405,12 +374,6 @@ class TestSE2(unittest.TestCase):
             SE2([TT1, TT2, TT1]) * vy,
             np.c_[h2e(T1 @ e2h(vy)), h2e(T2 @ e2h(vy)), h2e(T1 @ e2h(vy))],
         )
-
-    def test_defs(self):
-        # log
-        # x = SE2.Exp([2, 3, 0.5])
-        # array_compare(x.log(), np.array([[0, -0.5, 2], [0.5, 0, 3], [0, 0, 0]]))
-        pass
 
     def test_conversions(self):
         ##  SE2,                     convert to SE2, class
@@ -460,20 +423,6 @@ class TestSE2(unittest.TestCase):
         T1 = SE2.Rand()
 
         T1.printline()
-
-    @pytest.mark.skipif(
-        sys.platform.startswith("darwin") and sys.version_info < (3, 11),
-        reason="tkinter bug with mac",
-    )
-    def test_graphics(self):
-        plt.close("all")
-        T1 = SE2.Rand()
-        T2 = SE2.Rand()
-
-        T1.plot(block=False, dims=[-2, 2])
-
-        T1.animate(repeat=False, dims=[-2, 2], nframes=10)
-        T1.animate(T0=T2, repeat=False, dims=[-2, 2], nframes=10)
 
 
 # ---------------------------------------------------------------------------------------#

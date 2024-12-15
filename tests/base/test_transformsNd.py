@@ -79,14 +79,14 @@ class TestND(unittest.TestCase):
             r2t(np.ones((3, 3)), check=True)
 
     def test_r2t_sym(self):
-        theta = sp.symbols("theta")
+        theta = sp.symbols("theta", real=True)
         R = rot2(theta)
         T = r2t(R)
         self.assertEqual(r2t(R).dtype, "O")
         nt.assert_array_almost_equal(T[0:2, 2], np.r_[0, 0])
         nt.assert_array_almost_equal(T[:2, :2], R)
 
-        theta = sp.symbols("theta")
+        theta = sp.symbols("theta", real=True)
         R = rotx(theta)
         T = r2t(R)
         self.assertEqual(r2t(R).dtype, "O")
@@ -144,11 +144,11 @@ class TestND(unittest.TestCase):
             rt2tr(np.ones((3, 3)), [1, 2, 3], check=True)
 
     def test_rt2tr_sym(self):
-        theta = symbol("theta")
+        theta = sp.symbols("theta", real=True)
         R = rotx(theta)
         self.assertEqual(r2t(R).dtype, "O")
 
-        theta = symbol("theta")
+        theta = sp.symbols("theta", real=True)
         R = rot2(theta)
         self.assertEqual(r2t(R).dtype, "O")
 
@@ -410,7 +410,7 @@ class TestND(unittest.TestCase):
         self.assertAlmostEqual(np.linalg.det(a), det(a))
 
     def test_det_sym(self):
-        x, y = symbol("x y")
+        x, y = sp.symbols("x y", real=True)
         a = np.array([[x, y], [y, x]])
         self.assertEqual(det(a), x**2 - y**2)
 

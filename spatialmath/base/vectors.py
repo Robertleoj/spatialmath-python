@@ -567,7 +567,7 @@ def wrap_mpi2_pi2(theta: ArrayLike) -> float | NDArray:
 
     y = np.where(np.bitwise_and(n, 1) == 0, theta - n * np.pi, n * np.pi - theta)
     if isinstance(y, np.ndarray) and len(y) == 1:
-        return float(y)
+        return float(y.squeeze())
     else:
         return y
 
@@ -585,7 +585,7 @@ def wrap_0_2pi(theta: ArrayLike) -> float | NDArray:
     theta = getvector(theta)
     y = theta - 2.0 * math.pi * np.floor(theta / 2.0 / np.pi)
     if isinstance(y, np.ndarray) and len(y) == 1:
-        return float(y)
+        return float(y.squeeze())
     else:
         return y
 
@@ -603,7 +603,7 @@ def wrap_mpi_pi(theta: ArrayLike) -> float | NDArray:
     theta = getvector(theta)
     y = np.mod(theta + math.pi, 2 * math.pi) - np.pi
     if isinstance(y, np.ndarray) and len(y) == 1:
-        return float(y)
+        return float(y.squeeze())
     else:
         return y
 
@@ -658,7 +658,7 @@ def angdiff(a, b=None):
 
     y = np.mod(a + math.pi, 2 * math.pi) - math.pi
     if isinstance(y, np.ndarray) and len(y) == 1:
-        return float(y)
+        return float(y.squeeze())
     else:
         return y
 

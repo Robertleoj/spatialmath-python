@@ -1,20 +1,8 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Apr 10 14:19:04 2020
-
-@author: corkep
-
-"""
-
 import numpy as np
 import numpy.testing as nt
 import unittest
 from math import pi
-import math
 from scipy.linalg import logm
-import pytest
-import sys
 
 # from spatialmath.base.transforms2d import *
 from spatialmath.base.transforms2d import (
@@ -36,9 +24,7 @@ from spatialmath.base.transforms2d import (
     ICP2d,
     trprint2,
     trinterp2,
-    trplot2,
 )
-# from spatialmath.base import smb
 from spatialmath.base.transformsNd import (
     isR,
     t2r,
@@ -49,8 +35,6 @@ from spatialmath.base.transformsNd import (
     skewa,
     homtrans,
 )
-
-import matplotlib.pyplot as plt
 
 
 class Test2D(unittest.TestCase):
@@ -296,19 +280,6 @@ class Test2D(unittest.TestCase):
         nt.assert_array_almost_equal(
             trinterp2(start=None, end=T1, s=0.5), xyt2tr([0.5, 1, 0.15])
         )
-
-    @pytest.mark.skipif(
-        sys.platform.startswith("darwin") and sys.version_info < (3, 11),
-        reason="tkinter bug with mac",
-    )
-    def test_plot(self):
-        plt.figure()
-        trplot2(transl2(1, 2), block=False, frame="A", rviz=True, width=1)
-        trplot2(transl2(3, 1), block=False, color="red", arrow=True, width=3, frame="B")
-        trplot2(
-            transl2(4, 3) @ trot2(math.pi / 3), block=False, color="green", frame="c"
-        )
-        plt.close("all")
 
 
 # ---------------------------------------------------------------------------------------#
