@@ -161,7 +161,7 @@ class EllipseTest(unittest.TestCase):
         self.assertAlmostEqual(e.theta, 1.1780972450961724)
 
         e = Ellipse(radii=(1, 2), theta=0, centre=[3, 4])
-        nt.assert_almost_equal(e.E, np.diag([1, 0.25]))
+        nt.assert_almost_equal(e.E, nleftp.diag([1, 0.25]))
         nt.assert_almost_equal(e.centre, [3, 4])
         nt.assert_almost_equal(e.radii, [1, 2])
         self.assertAlmostEqual(e.theta, 0)
