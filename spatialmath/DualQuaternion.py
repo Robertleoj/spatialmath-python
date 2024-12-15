@@ -4,7 +4,6 @@ from spatialmath import Quaternion, UnitQuaternion
 from spatialmath import base
 import spatialmath.pose3d as pose3d
 from spatialmath.base.types import ArrayLike3, R8x8, R8
-from typing import overload
 
 # TODO scalar multiplication
 
@@ -281,7 +280,9 @@ class UnitDualQuaternion(DualQuaternion):
     :seealso: :func:`UnitDualQuaternion`
     """
 
-    def __init__(self, real: Quaternion | None = None, dual: Quaternion | None = None) -> None:
+    def __init__(
+        self, real: Quaternion | None = None, dual: Quaternion | None = None
+    ) -> None:
         r"""
         Create new unit dual quaternion
 

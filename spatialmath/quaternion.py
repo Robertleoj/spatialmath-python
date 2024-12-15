@@ -482,9 +482,7 @@ class Quaternion(BasePoseList):
 
     # -------------------------------------------- operators
 
-    def __eq__(
-        self: Quaternion, right: Quaternion
-    ) -> bool:
+    def __eq__(self: Quaternion, right: Quaternion) -> bool:
         """
         Overloaded ``==`` operator
 
@@ -510,9 +508,7 @@ class Quaternion(BasePoseList):
         assert isinstance(self, type(right)), "operands to == are of different types"
         return self.binop(right, smb.qisequal, list1=False)
 
-    def __ne__(
-        self: Quaternion, right: Quaternion
-    ) -> bool:
+    def __ne__(self: Quaternion, right: Quaternion) -> bool:
         """
         Overloaded ``!=`` operator
 
@@ -537,9 +533,7 @@ class Quaternion(BasePoseList):
         assert isinstance(self, type(right)), "operands to == are of different types"
         return self.binop(right, lambda x, y: not smb.qisequal(x, y), list1=False)
 
-    def __mul__(
-        self: Quaternion, right: Quaternion
-    ) -> Quaternion:
+    def __mul__(self: Quaternion, right: Quaternion) -> Quaternion:
         """
         Overloaded ``*`` operator
 
@@ -600,9 +594,7 @@ class Quaternion(BasePoseList):
         else:
             raise ValueError("operands to * are of different types")
 
-    def __rmul__(
-        self: Quaternion, right: Quaternion
-    ) -> Quaternion:
+    def __rmul__(self: Quaternion, right: Quaternion) -> Quaternion:
         """
         Overloaded ``*`` operator
 
@@ -625,9 +617,7 @@ class Quaternion(BasePoseList):
         # scalar * quaternion case
         return Quaternion([right * q._A for q in self])
 
-    def __imul__(
-        self: Quaternion, right: Quaternion
-    ) -> Quaternion:
+    def __imul__(self: Quaternion, right: Quaternion) -> Quaternion:
         """
         Overloaded ``*=`` operator
 
@@ -757,9 +747,7 @@ class Quaternion(BasePoseList):
         assert isinstance(left, type(right)), "operands to + are of different types"
         return Quaternion(left.binop(right, lambda x, y: x + y))
 
-    def __sub__(
-        self: Quaternion, right: Quaternion
-    ) -> Quaternion:
+    def __sub__(self: Quaternion, right: Quaternion) -> Quaternion:
         """
         Overloaded ``-`` operator
 
