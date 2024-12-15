@@ -134,8 +134,8 @@ class TestQuaternion(unittest.TestCase):
             qslerp(q1, q2, 0.5), np.r_[0, 1, 1, 0] / math.sqrt(2)
         )
 
-        q1 = [0, 1, 0, 0]
-        q2 = [0, 0, 1, 0]
+        q1 = np.array([0, 1, 0, 0])
+        q2 = np.array([0, 0, 1, 0])
 
         nt.assert_array_almost_equal(qslerp(q1, q2, 0), q1)
         nt.assert_array_almost_equal(qslerp(q1, q2, 1), q2)

@@ -111,7 +111,7 @@ def qnorm(q: ArrayLike4) -> float:
 
     """
     q = smb.getvector(q, 4)
-    return np.linalg.norm(q)
+    return float(np.linalg.norm(q))
 
 
 def qunit(q: ArrayLike4, tol: float = 20) -> UnitQuaternionArray:
@@ -1116,8 +1116,8 @@ def qprint(
     q: ArrayLike4 | ArrayLike4,
     delim: tuple[str, str] = ("<", ">"),
     fmt: str = "{: .4f}",
-    file: TextIO = sys.stdout,
-) -> str:
+    file: TextIO | None = sys.stdout,
+) -> str | None:
     """
     Format a quaternion
 
@@ -1154,7 +1154,7 @@ def qprint(
     q = smb.getvector(q, 4)
     template = "# {} #, #, # {}".replace("#", fmt)
     s = template.format(q[0], delim[0], q[1], q[2], q[3], delim[1])
-    if file:
+    if file is not None:
         file.write(s + "\n")
     else:
         return s
