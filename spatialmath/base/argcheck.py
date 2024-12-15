@@ -617,7 +617,11 @@ def isvectorlist(x: Any, n: int) -> bool:
     return islistof(x, lambda x: isinstance(x, np.ndarray) and x.shape == (n,))
 
 
-def islistof(value: Any, what: type | Callable, n: int | None = None):
+def islistof(
+    value: Any,
+    what: type | tuple[type, ...] | Callable,
+    n: int | None = None,
+) -> bool:
     """
     Test if argument is a list of specified type
 
