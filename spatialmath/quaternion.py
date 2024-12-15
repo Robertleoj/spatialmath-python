@@ -483,8 +483,8 @@ class Quaternion(BasePoseList):
     # -------------------------------------------- operators
 
     def __eq__(
-        left, right: Quaternion
-    ) -> bool:  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+        self: Quaternion, right: Quaternion
+    ) -> bool:
         """
         Overloaded ``==`` operator
 
@@ -507,12 +507,12 @@ class Quaternion(BasePoseList):
 
         :seealso: :func:`__ne__` :func:`~spatialmath.base.quaternions.qisequal`
         """
-        assert isinstance(left, type(right)), "operands to == are of different types"
-        return left.binop(right, smb.qisequal, list1=False)
+        assert isinstance(self, type(right)), "operands to == are of different types"
+        return self.binop(right, smb.qisequal, list1=False)
 
     def __ne__(
-        left, right: Quaternion
-    ) -> bool:  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+        self: Quaternion, right: Quaternion
+    ) -> bool:
         """
         Overloaded ``!=`` operator
 
@@ -534,12 +534,12 @@ class Quaternion(BasePoseList):
 
         :seealso: :func:`__ne__` :func:`~spatialmath.base.quaternions.qisequal`
         """
-        assert isinstance(left, type(right)), "operands to == are of different types"
-        return left.binop(right, lambda x, y: not smb.qisequal(x, y), list1=False)
+        assert isinstance(self, type(right)), "operands to == are of different types"
+        return self.binop(right, lambda x, y: not smb.qisequal(x, y), list1=False)
 
     def __mul__(
-        left, right: Quaternion
-    ) -> Quaternion:  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+        self: Quaternion, right: Quaternion
+    ) -> Quaternion:
         """
         Overloaded ``*`` operator
 
@@ -588,21 +588,21 @@ class Quaternion(BasePoseList):
 
         :seealso: :func:`__rmul__` :func:`__imul__` :func:`~spatialmath.base.quaternions.qqmul`
         """
-        if isinstance(right, left.__class__):
+        if isinstance(right, self.__class__):
             # quaternion * [unit]quaternion case
-            return Quaternion(left.binop(right, smb.qqmul))
+            return Quaternion(self.binop(right, smb.qqmul))
 
         elif smb.isscalar(right):
             # quaternion * scalar case
             # print('scalar * quat')
-            return Quaternion([right * q._A for q in left])
+            return Quaternion([right * q._A for q in self])
 
         else:
             raise ValueError("operands to * are of different types")
 
     def __rmul__(
-        right, left: Quaternion
-    ) -> Quaternion:  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+        self: Quaternion, right: Quaternion
+    ) -> Quaternion:
         """
         Overloaded ``*`` operator
 
@@ -623,11 +623,11 @@ class Quaternion(BasePoseList):
         :seealso: :func:`__mul__`
         """
         # scalar * quaternion case
-        return Quaternion([left * q._A for q in right])
+        return Quaternion([right * q._A for q in self])
 
     def __imul__(
-        left, right: Quaternion
-    ) -> bool:  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+        self: Quaternion, right: Quaternion
+    ) -> Quaternion:
         """
         Overloaded ``*=`` operator
 
@@ -651,7 +651,7 @@ class Quaternion(BasePoseList):
 
         :seealso: :func:`__mul__`
         """
-        return left.__mul__(right)
+        return self.__mul__(right)
 
     def __pow__(self, n: int) -> Quaternion:
         """
@@ -758,8 +758,8 @@ class Quaternion(BasePoseList):
         return Quaternion(left.binop(right, lambda x, y: x + y))
 
     def __sub__(
-        left, right: Quaternion
-    ) -> Quaternion:  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+        self: Quaternion, right: Quaternion
+    ) -> Quaternion:
         """
         Overloaded ``-`` operator
 
@@ -809,8 +809,8 @@ class Quaternion(BasePoseList):
         """
         # results is not in the group, return an array, not a class
         # TODO allow class +/- a conformant array
-        assert isinstance(left, type(right)), "operands to - are of different types"
-        return Quaternion(left.binop(right, lambda x, y: x - y))
+        assert isinstance(self, type(right)), "operands to - are of different types"
+        return Quaternion(self.binop(right, lambda x, y: x - y))
 
     def __neg__(self) -> Quaternion:
         r"""
@@ -1076,6 +1076,7 @@ class UnitQuaternion(Quaternion):
             >>> UnitQuaternion.isvalid(np.r_[1, 0, 0, 0])
             >>> UnitQuaternion.isvalid(np.r_[1, 2, 3, 4])
         """
+        x = np.array(x)
         return x.shape == (4,) and (not check or smb.isunitvec(x))
 
     @property

@@ -4,7 +4,7 @@ from spatialmath import Quaternion, UnitQuaternion
 from spatialmath import base
 import spatialmath.pose3d as pose3d
 from spatialmath.base.types import ArrayLike3, R8x8, R8
-from typing import Self, overload
+from typing import overload
 
 # TODO scalar multiplication
 
@@ -77,7 +77,7 @@ class DualQuaternion:
             raise ValueError("expecting zero or two parameters")
 
     @classmethod
-    def Pure(cls, x: ArrayLike3) -> Self:
+    def Pure(cls, x: ArrayLike3) -> DualQuaternion:
         x = base.getvector(x, 3)
         return cls(UnitQuaternion(), Quaternion.Pure(x))
 
@@ -123,7 +123,7 @@ class DualQuaternion:
         b = self.real * self.dual.conj() + self.dual * self.real.conj()
         return (base.sqrt(a.s), base.sqrt(b.s))
 
-    def conj(self) -> Self:
+    def conj(self) -> DualQuaternion:
         r"""
         Conjugate of dual quaternion
 
@@ -144,7 +144,7 @@ class DualQuaternion:
         """
         return DualQuaternion(self.real.conj(), self.dual.conj())
 
-    def __add__(left, right: DualQuaternion) -> Self:  # pylint: disable=no-self-argument
+    def __add__(self: DualQuaternion, right: DualQuaternion) -> DualQuaternion:
         """
         Sum of two dual quaternions
 
@@ -159,9 +159,12 @@ class DualQuaternion:
             >>> d = DualQuaternion(Quaternion([1,2,3,4]), Quaternion([5,6,7,8]))
             >>> d + d
         """
-        return DualQuaternion(left.real + right.real, left.dual + right.dual)
+        assert self.real is not None and self.dual is not None
+        assert right.real is not None and right.dual is not None
 
-    def __sub__(left, right: DualQuaternion) -> Self:  # pylint: disable=no-self-argument
+        return DualQuaternion(self.real + right.real, self.dual + right.dual)
+
+    def __sub__(self, right: DualQuaternion) -> DualQuaternion:
         """
         Difference of two dual quaternions
 
@@ -176,9 +179,12 @@ class DualQuaternion:
             >>> d = DualQuaternion(Quaternion([1,2,3,4]), Quaternion([5,6,7,8]))
             >>> d - d
         """
-        return DualQuaternion(left.real - right.real, left.dual - right.dual)
+        assert self.real is not None and self.dual is not None
+        assert right.real is not None and right.dual is not None
 
-    def __mul__(left, right: Self) -> Self:  # pylint: disable=no-self-argument
+        return DualQuaternion(self.real - right.real, self.dual - right.dual)
+
+    def __mul__(self: DualQuaternion, right: DualQuaternion) -> DualQuaternion:
         """
         Product of dual quaternion
 
@@ -196,19 +202,23 @@ class DualQuaternion:
             >>> d = DualQuaternion(Quaternion([1,2,3,4]), Quaternion([5,6,7,8]))
             >>> d * d
         """
-        if isinstance(right, DualQuaternion):
-            real = left.real * right.real
-            dual = left.real * right.dual + left.dual * right.real
+        assert self.real is not None and self.dual is not None
+        assert right.real is not None and right.dual is not None
 
-            if isinstance(left, UnitDualQuaternion) and isinstance(
-                left, UnitDualQuaternion
+        if isinstance(right, DualQuaternion):
+            real = self.real * right.real
+            dual = self.real * right.dual + self.dual * right.real
+
+            if isinstance(self, UnitDualQuaternion) and isinstance(
+                self, UnitDualQuaternion
             ):
                 return UnitDualQuaternion(real, dual)
             else:
                 return DualQuaternion(real, dual)
-        elif isinstance(left, UnitDualQuaternion) and base.isvector(right, 3):
+
+        elif isinstance(self, UnitDualQuaternion) and base.isvector(right, 3):
             v = base.getvector(right, 3)
-            vp = left * DualQuaternion.Pure(v) * left.conj()
+            vp = self * DualQuaternion.Pure(v) * self.conj()
             return vp.dual.v
 
     def matrix(self) -> R8x8:
@@ -231,6 +241,8 @@ class DualQuaternion:
             >>> d.matrix() @ d.vec
             >>> d * d
         """
+        assert self.real is not None and self.dual is not None
+
         return np.block(
             [[self.real.matrix, np.zeros((4, 4))], [self.dual.matrix, self.real.matrix]]
         )
@@ -251,10 +263,9 @@ class DualQuaternion:
             >>> d = DualQuaternion(Quaternion([1,2,3,4]), Quaternion([5,6,7,8]))
             >>> d.vec
         """
-        return np.r_[self.real.vec, self.dual.vec]
+        assert self.real is not None and self.dual is not None
 
-    # def log(self):
-    #     pass
+        return np.r_[self.real.vec, self.dual.vec]
 
 
 class UnitDualQuaternion(DualQuaternion):
@@ -270,13 +281,7 @@ class UnitDualQuaternion(DualQuaternion):
     :seealso: :func:`UnitDualQuaternion`
     """
 
-    @overload
-    def __init__(self, T: pose3d.SE3): ...
-
-    @overload
-    def __init__(self, real: Quaternion, dual: Quaternion): ...
-
-    def __init__(self, real=None, dual=None):
+    def __init__(self, real: Quaternion | None = None, dual: Quaternion | None = None) -> None:
         r"""
         Create new unit dual quaternion
 
