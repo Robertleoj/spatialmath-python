@@ -13,7 +13,6 @@ from spatialmath.base.symbolic import issymbol, symtype
 from typing import Any, cast, overload, Callable
 
 
-
 # valid scalar types
 _scalartypes = (int, np.integer, float, np.floating) + symtype
 
@@ -544,7 +543,6 @@ def getunit(v: ArrayLike, unit: str = "rad", dim=None) -> float | NDArray:
     :seealso: :func:`getvector`
     """
     if not isinstance(v, Iterable) and dim == 0:
-
         # scalar in, scalar out
         if unit == "rad":
             return v

@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import animation
 from matplotlib.axes import Axes
+from mpl_toolkits.mplot3d.axes3d import Axes3D
 import spatialmath.base as smb
 from collections.abc import Iterable, Iterator
 from spatialmath.base.types import ArrayLike, SO3Array, SE3Array, SO2Array, SE2Array
@@ -40,7 +41,7 @@ class Animate:
 
     def __init__(
         self,
-        ax: Axes | None = None,
+        ax: Axes3D | None = None,
         dim: ArrayLike | None = None,
         projection: str = "ortho",
         labels: tuple[str, str, str] = ("X", "Y", "Z"),
@@ -103,9 +104,9 @@ class Animate:
                 raise ValueError(
                     f"dim must have 2 or 6 elements, got {dim}. See docstring for details."
                 )
-            ax.set_xlim(dim[0:2])
-            ax.set_ylim(dim[2:4])
-            ax.set_zlim(dim[4:])
+            ax.set_xlim((dim[0], dim[1]))
+            ax.set_ylim((dim[2], dim[3]))
+            ax.set_zlim((dim[4], dim[5]))
 
         self.ax = ax
 
@@ -528,6 +529,9 @@ class Animate2:
         Will setup to plot into an existing or a new Axes3D instance.
 
         """
+        assert not isinstance(dims, float)
+        dims = np.array(dims)
+
         self.trajectory = None
         self.displaylist = []
 
@@ -547,8 +551,8 @@ class Animate2:
         if dims is not None:
             if len(dims) == 2:
                 dims = dims * 2
-            axes.set_xlim(dims[0:2])
-            axes.set_ylim(dims[2:4])
+            axes.set_xlim((dims[0], dims[1]))
+            axes.set_ylim((dims[2], dims[3]))
             # ax.set_aspect('equal')
 
         self.ax = axes
@@ -601,7 +605,7 @@ class Animate2:
     def run(
         self,
         movie: str | bool | None = None,
-        axes: plt.Axes | None = None,
+        axes: Axes | None = None,
         repeat: bool = False,
         interval: int = 50,
         nframes: int = 100,
@@ -832,9 +836,6 @@ class Animate2:
 
         def draw(self, T):
             p = T @ self.p
-            # x2, y2, _ = proj3d.proj_transform(
-            #   p[0], p[1], p[2], self.anim.ax.get_proj())
-            # self.h.set_position((x2, y2))
             self.h.set_position((p[0], p[1]))
 
     def text(self, x, y, *args, **kwargs):
@@ -879,29 +880,6 @@ class Animate2:
 
 
 if __name__ == "__main__":
-    # from spatialmath import UnitQuaternion
-    # from spatialmath.base import tranimate, r2t
-
-    # J = np.array([[2, -1, 0], [-1, 4, 0], [0, 0, 3]])
-    # dt = 0.05
-    # def attitude():
-    #     attitude = UnitQuaternion()
-    #     w = 0.2 * np.r_[1, 2, 2].T
-    #     for t in np.arange(0, 3, dt):
-    #         wd =  -np.linalg.inv(J) @ (np.cross(w, J @ w))
-    #         w += wd * dt
-    #         attitude.increment(w * dt)
-    #         yield attitude.R
-    # plt.figure()
-    # plotvol3(2)
-    # tranimate(attitude())
-
-    # T = smb.rpy2r(0.3, 0.4, 0.5)
-    # # smb.tranimate(T, wait=True)
-    # s = smb.tranimate(T, movie=True)
-    # with open("zz.html", "w") as f:
-    #     print(f"<html>{s}</html>", file=f)
-
     T = smb.rot2(2)
     # smb.tranimate2(T, wait=True)
     s = smb.tranimate2(T, movie=True)

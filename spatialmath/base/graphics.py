@@ -43,11 +43,11 @@ from mpl_toolkits.mplot3d.art3d import (
 from mpl_toolkits.mplot3d import Axes3D
 
 
-
 # TODO
 # return a redrawer object, that can be used for animation
 
 # =========================== 2D shapes =================================== #
+
 
 def plot_text(
     pos: ArrayLike2,
@@ -100,6 +100,7 @@ def plot_text(
 
     handle = ax.text(pos[0], pos[1], text, color=color, **kwargs)
     return [handle]
+
 
 def plot_point(
     pos: ArrayLike2,
@@ -270,6 +271,7 @@ def plot_point(
                 )
     return handles
 
+
 def plot_homline(
     lines: ArrayLike3 | NDArray,
     *args,
@@ -335,6 +337,7 @@ def plot_homline(
             handles.append(ax.plot(x, ylim, *args, **kwargs))
 
     return handles
+
 
 def plot_box(
     *fmt: str | None,
@@ -509,6 +512,7 @@ def plot_box(
 
     return r
 
+
 def plot_arrow(
     start: ArrayLike2,
     end: ArrayLike2,
@@ -609,6 +613,7 @@ def plot_arrow(
             label = " " + label
         ax.text(*pos, label, **opt)
 
+
 def plot_polygon(
     vertices: NDArray, *fmt, close: bool = False, **kwargs
 ) -> list[Artist]:
@@ -643,6 +648,7 @@ def plot_polygon(
         vertices = np.hstack((vertices, vertices[:, [0]]))
     return _render2D(vertices, fmt=fmt, **kwargs)
 
+
 def _render2D(
     vertices: NDArray,
     pose=None,
@@ -667,6 +673,7 @@ def _render2D(
             kwargs["color"] = color
         r = plt.plot(vertices[0, :], vertices[1, :], *fmt, **kwargs)
     return r
+
 
 def circle(
     centre: ArrayLike2 = (0, 0),
@@ -706,6 +713,7 @@ def circle(
         return np.array((x, y, z))
     else:
         return np.array((x, y))
+
 
 def plot_circle(
     radius: float,
@@ -762,6 +770,7 @@ def plot_circle(
         else:
             handles.append(ax.plot(xy[0, :], xy[1, :], *fmt, **kwargs))
     return handles
+
 
 def ellipse(
     E: R2x2,
@@ -825,6 +834,7 @@ def ellipse(
 
     e = s * sqrtm(E) @ xy + np.array(centre, ndmin=2).T
     return e
+
 
 def plot_ellipse(
     E: R2x2,
@@ -893,7 +903,9 @@ def plot_ellipse(
     else:
         plt.plot(xy[0, :], xy[1, :], *fmt, **kwargs)
 
+
 # =========================== 3D shapes =================================== #
+
 
 def sphere(
     radius: float | None = 1,
@@ -926,6 +938,7 @@ def sphere(
     z = radius * np.cos(Theta) + centre[2]
 
     return (x, y, z)
+
 
 def plot_sphere(
     radius: float,
@@ -995,6 +1008,7 @@ def plot_sphere(
 
     return handles
 
+
 def ellipsoid(
     E: R2x2,
     centre: ArrayLike3 | None = (0, 0, 0),
@@ -1042,15 +1056,13 @@ def ellipsoid(
 
     x, y, z = sphere()  # unit sphere
     centre = smb.getvector(centre, 3, out="col")
-    e = (
-        scale * sqrtm(E) @ np.array([x.flatten(), y.flatten(), z.flatten()])
-        + centre
-    )
+    e = scale * sqrtm(E) @ np.array([x.flatten(), y.flatten(), z.flatten()]) + centre
     return (
         e[0, :].reshape(x.shape),
         e[1, :].reshape(x.shape),
         e[2, :].reshape(x.shape),
     )
+
 
 def plot_ellipsoid(
     E: R3x3,
@@ -1111,6 +1123,7 @@ def plot_ellipsoid(
     handle = _render3D(ax, X, Y, Z, **kwargs)
     return [handle]
 
+
 def cylinder(
     center_x: float,
     center_y: float,
@@ -1148,6 +1161,7 @@ def cylinder(
     X = radius * np.cos(theta_grid) + center_x
     Y = radius * np.sin(theta_grid) + center_y
     return X, Y, Z
+
 
 # https://stackoverflow.com/questions/30715083/python-plotting-a-wireframe-3d-cuboid
 # https://stackoverflow.com/questions/26874791/disconnected-surfaces-when-plotting-cones
@@ -1230,6 +1244,7 @@ def plot_cylinder(
 
     return handles
 
+
 def plot_cone(
     radius: float,
     height: float,
@@ -1298,9 +1313,7 @@ def plot_cone(
 
     handles = []
     handles.append(_render3D(ax, X, Y, Z, filled=filled, **kwargs))
-    handles.append(
-        _render3D(ax, X, (2 * centre[1] - Y), Z, filled=filled, **kwargs)
-    )
+    handles.append(_render3D(ax, X, (2 * centre[1] - Y), Z, filled=filled, **kwargs))
 
     if ends and kwargs.get("filled", default=False):
         floor = Circle(centre[:2], radius, **kwargs)
@@ -1312,6 +1325,7 @@ def plot_cone(
         pathpatch_2d_to_3d(ceiling, z=height[1], zdir="z")
 
     return handles
+
 
 def plot_cuboid(
     sides: ArrayLike3 = (1, 1, 1),
@@ -1408,6 +1422,7 @@ def plot_cuboid(
         ax.add_collection3d(collection)
         return collection
 
+
 def _render3D(
     ax: Axes,
     X: NDArray,
@@ -1445,6 +1460,7 @@ def _render3D(
         kwargs["colors"] = color
         return ax.plot_wireframe(X, Y, Z, **kwargs)
 
+
 def _axes_dimensions(ax: Axes) -> int:
     """
     Dimensions of axes
@@ -1468,12 +1484,15 @@ def _axes_dimensions(ax: Axes) -> int:
     # print("_axes_dimensions ", ax, ret)
     return ret
 
+
 def axes_get_limits(ax: Axes) -> NDArray:
     return np.r_[ax.get_xlim(), ax.get_ylim()]
+
 
 def axes_get_scale(ax: Axes) -> float:
     limits = axes_get_limits(ax)
     return max(abs(limits[1] - limits[0]), abs(limits[3] - limits[2]))
+
 
 @overload
 def axes_logic(
@@ -1483,6 +1502,7 @@ def axes_logic(
     new: bool | None = False,
 ) -> Axes: ...
 
+
 @overload
 def axes_logic(
     ax: Axes | None,
@@ -1491,6 +1511,7 @@ def axes_logic(
     autoscale: bool | None = True,
     new: bool | None = False,
 ) -> Axes3D: ...
+
 
 def axes_logic(
     ax: Axes | Axes3D | None,
@@ -1566,6 +1587,7 @@ def axes_logic(
 
     return ax
 
+
 def plotvol2(
     dim: ArrayLike | None = None,
     ax: Axes | None = None,
@@ -1620,6 +1642,7 @@ def plotvol2(
     # signal to related functions that plotvol set the axis limits
     ax._plotvol = True
     return ax
+
 
 def plotvol3(
     dim: ArrayLike | None = None,
@@ -1682,6 +1705,7 @@ def plotvol3(
     ax._plotvol = True
     return ax
 
+
 def expand_dims(dim: ArrayLike | None = None, nd: int = 2) -> NDArray:
     """
     Expand compact axis dimensions
@@ -1729,6 +1753,7 @@ def expand_dims(dim: ArrayLike | None = None, nd: int = 2) -> NDArray:
     else:
         raise ValueError("nd is 2 or 3")
 
+
 def isnotebook() -> bool:
     """
     Determine if code is being run from a Jupyter notebook
@@ -1750,6 +1775,7 @@ def isnotebook() -> bool:
             return False  # Other type (?)
     except NameError:
         return False  # Probably standard Python interpreter
+
 
 if __name__ == "__main__":
     import pathlib

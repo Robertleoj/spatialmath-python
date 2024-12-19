@@ -962,13 +962,16 @@ def qrand(
 
         # Sample angle using inverse transform sampling based on CDF
         # of the angular distribution (2/pi * sin^2(theta/2))
-        theta = cast(np.floating, _compute_inv_cdf_sin_squared(
-            np.random.uniform(
-                low=_compute_cdf_sin_squared(theta_range[0]),
-                high=_compute_cdf_sin_squared(theta_range[1]),
+        theta = cast(
+            np.floating,
+            _compute_inv_cdf_sin_squared(
+                np.random.uniform(
+                    low=_compute_cdf_sin_squared(theta_range[0]),
+                    high=_compute_cdf_sin_squared(theta_range[1]),
+                ),
+                num_interpolation_points=num_interpolation_points,
             ),
-            num_interpolation_points=num_interpolation_points,
-        ))
+        )
         # Sample axis uniformly using 3D normal distributed
         v = np.random.randn(3)
         v /= np.linalg.norm(v)
